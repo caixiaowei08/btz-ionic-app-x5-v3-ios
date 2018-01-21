@@ -1,0 +1,62 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>{{title}}</ion-title>
+  </ion-navbar>
+  <video id="video" [src]="url" tappable class="video-js vjs-big-play-centered" (timeupdate)="getJd($event)" preload="auto" (canplay)="canPlay($event)"
+         controls="controls" controlsList="nodownload" playsinline webkit-playsinline>
+  </video>
+  <ion-segment [(ngModel)]="seg">
+    <ion-segment-button value="s1" class="segment-button-midd">
+    视频
+    </ion-segment-button>
+    <ion-segment-button value="s2">
+    讲义
+    </ion-segment-button>
+  </ion-segment>
+</ion-header>
+<ion-content no-padding>
+  <div [ngSwitch]="seg" style="width:100%;height:100%">
+    <div *ngSwitchCase="'s1'">
+      <!--<ion-item no-lines>
+        <ion-label>播放速度</ion-label>
+        <ion-select [(ngModel)]="playbackRate" (ionChange)="setRate($event)" interface="popover">
+          <ion-option value=1>正常</ion-option>
+          <ion-option value="0.5">减速</ion-option>
+          <ion-option value=1.5>加速1.5倍</ion-option>
+          <ion-option value=2>加速2.0倍</ion-option>
+        </ion-select>
+      </ion-item>-->
+      <div class="video-item" *ngFor="let v of videos;let i = index">
+        <div class="video-title" tappable (click)="htoggle(i)">{{v.title}}<div class="cb"></div></div>
+        <div class="video-content" *ngFor="let v of v.list;let j=index">
+          <div *ngIf="!isOk(v)">
+            <img src="assets/images/cant.png"/>
+            <div class="video-cant">{{v.title}}
+              <p>待解锁</p>
+            </div>
+            <div></div>
+          </div>
+          <div *ngIf="isOk(v)">
+            <img src="assets/images/play.png"/>
+            <div class="video-text" tappable (click)="setUrl(i,j)">{{v.title}}
+              <p *ngIf="v.done==0">{{si==i&&sj==j?(first?'暂停中':'加载中'):'未观看'}}</p>
+              <p *ngIf="v.done!=0" [class]="si==i&&sj==j?'video-text-p':''">
+                {{formatSeconds(v.done)}}/{{formatSeconds(v.time)}}
+              </p>
+            </div>
+            <div [class]="getDownClass(v.id)" tappable (click)="setOpera(i,j)"><div><p>0%</p></div></div>
+          </div>
+          <!--
+          <div *ngIf="v.down==0" class="video-down" (click)="setOpera(i,j)"></div>
+          <div *ngIf="v.down==1" class="video-delete" (click)="setOpera(i,j)"></div>
+          <div *ngIf="v.down==2" class="video-jdt" (click)="setOpera(i,j)"></div>
+          <div *ngIf="v.down==3" class="video-wait" (click)="setOpera(i,j)"></div>
+          -->
+        </div>
+      </div>
+    </div>
+    <div *ngSwitchCase="'s2'" style="width: 100%;height: 100%;overflow: auto;">
+      <iframe [src]="urll"></iframe>
+    </div>
+  </div>
+</ion-content>

@@ -1,0 +1,47 @@
+page-note {
+    .note-content{
+        background-color: #fff;
+        padding:15px;
+        border-bottom: 1px solid #f1f1f1;
+    }
+    .note-info{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        .note-img{
+            width:30px;
+            height:30px;
+            background-image: url(../assets/images/user.png);
+            background-size:contain;
+            background-repeat: no-repeat;
+        }
+        .note-namedate{
+            width:100%;
+            margin-left:10px;
+            color:#999;
+            span{
+                display: inline-block;
+                margin-right: 10px;
+                color:color($colors,top);
+            }
+        }
+        .note-zan{
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            color:#999;
+            font-size:13px;
+            width:80px;
+            img{
+                width:18px;
+                height:18px;
+                margin-left:2px;
+            }
+        }
+    }
+    .note-text{
+        margin-left: 35px;
+        font-size:15px;
+        line-height: 20px;
+    }
+}

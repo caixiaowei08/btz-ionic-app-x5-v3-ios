@@ -1,0 +1,18 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>我的消息</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content no-padding>
+ <page-null *ngIf="msg!=null&&msg.length==0"></page-null>
+ <div *ngIf="msg!=null">
+  <div class="msg-content" *ngFor="let m of msg;let i=index">
+    <div class="msg-time"><span>系统<button tappable (click)="goExam(m.exerciseId)">查看题目</button></span><span>{{m.dealTime}}</span></div>
+    <div class="msg-info">
+      <div class="msg-info-time"><span>我的问题:</span><span>{{m.createTime}}</span></div>
+      {{m.content}}
+    </div>
+    <div class="msg-ans"><span>老师回复: </span>{{m.answer}}</div>
+  </div>
+ </div>
+</ion-content>

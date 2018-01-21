@@ -1,0 +1,140 @@
+<div class="darklayer"></div>
+<ion-header>
+  <ion-navbar style="padding-top: 20px;">
+    <ion-title *ngIf="title=='look'">查看题目</ion-title>
+    <ion-title  style="padding-top: 14px;padding-bottom: 2px;" *ngIf="title!='look'">{{title}}<p>{{subject.name}}</ion-title>
+    <ion-buttons right tappable (click)="checkAll()">
+      <button ion-button [hidden]="all==0||title=='look'||mode==2">
+        <ion-label>交卷</ion-label>
+      </button>
+    </ion-buttons>
+    <ion-buttons right tappable (click)="goBack()">
+      <button ion-button [hidden]="mode!=2">
+        <ion-label>确定</ion-label>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+<ion-content no-padding *ngIf="all==0">
+  <page-null></page-null>
+</ion-content>
+<ion-content no-padding (swipe)="swipe($event)" *ngIf="all>0">
+  <div class="exam" [ngStyle]="{'pointer-events': mode==2?'none':'auto'}">
+    <div class="exam-ts">
+      <div  tappable class="exam-type">{{getType()}}</div>
+      <div  tappable class="exam-time">{{timeM}}</div>
+      <div  tappable class="exam-fy">{{id+1}}<span>/{{all}}</span></div>
+    </div>
+    <div class="exam-title" [innerHtml]="exam.title"></div>
+    <!--选择题1，可判断-->
+    <div class="exam-content exam-type1" *ngIf="exam.typeShow==1">
+      <ul *ngFor="let e of getContent1();let i=index"  tappable  (click)="setType1(i)">
+        <div tappable [class]="getType1(i)">{{e.substring(0,1)}}</div>
+        <span [innerHtml]="e.substring(2)"></span>
+      </ul>
+    </div>
+    <!--多选题2，可判断-->
+    <div class="exam-content exam-type1" *ngIf="exam.typeShow==2">
+      <ul *ngFor="let e of getContent1();let i=index" (click)="setType2(i)">
+        <div tappable [class]="getType2(i)">{{e.substring(0,1)}}</div>
+        <span [innerHtml]="e.substring(2)"></span>
+      </ul>
+    </div>
+    <!--判断题3，可判断-->
+    <div class="exam-content exam-type1" *ngIf="exam.typeShow==3">
+      <ul *ngFor="let e of getContent1();let i=index" tappable (click)="setType3(i)">
+        <div tappable [class]="getType3(i)"></div>
+        <span [innerHtml]="e"></span>
+      </ul>
+    </div>
+    <!--分录题(数字)4，可判断-->
+    <div class="exam-content exam-type1 exam-type4" *ngIf="exam.typeShow==4">
+      <ul *ngFor="let e of getContent2();let i=index">
+        <span [innerHtml]="e"></span>
+        <input type="text" [value]="getType4(i)" tappable  (change)="setType4($event,i)"/>
+      </ul>
+    </div>
+    <!--分录题(固定格式)5，不可判断-->
+    <div class="exam-content exam-type1 exam-type5" *ngIf="exam.typeShow==5">
+      <ul *ngFor="let e of getContent2();let i=index">
+        <p [innerHtml]="e"></p>
+        <input type="text" [value]="getType4(i)" tappable (change)="setType4($event,i)"/>
+      </ul>
+    </div>
+    <!--不定项6，可判断-->
+    <div class="exam-content exam-type1 exam-type6" *ngIf="exam.typeShow==6">
+      <ul *ngFor="let e of getContent2();let i=index">
+        <li *ngFor="let f of getContent2Sub(e);let j=index" (click)="setType6(i,j)">
+          <span *ngIf="j==0" [innerHtml]="f"></span>
+          <div tappable *ngIf="j>0" [class]="getType6(i,j)">{{f.substring(0,1)}}</div>
+          <span *ngIf="j>0" [innerHtml]="f.substring(2)"></span>
+        </li>
+      </ul>
+    </div>
+    <!--概括大意7，可判断-->
+    <div class="exam-content exam-type7" *ngIf="exam.typeShow==7">
+      <ul *ngFor="let e of getContent3();let i=index">
+        <li *ngFor="let f of getContent3Sub(e);let j=index">
+          <p [innerHtml]="f"></p>
+            <ion-item>
+                <ion-select [(ngModel)]="exam7[i][j]" interface="popover" (ionChange)="setType7()">
+                  <ion-option *ngFor="let g of exam7ans" [value]="getType7ans(g)">
+                    {{getType7ans(g)}}
+                  </ion-option>
+                </ion-select>
+            </ion-item>
+        </li>
+        <li *ngFor="let f of exam7ans;">
+            <p [innerHtml]="f"></p>
+        </li>
+      </ul>
+    </div>
+    <!--长文本题8，不可判断-->
+    <div class="exam-content exam-type1 exam-type8" *ngIf="exam.typeShow==8">
+      <ul *ngFor="let e of getContent2();let i=index">
+        <p [innerHtml]="e"></p>
+        <textarea [value]="getType4(i)" tappable (change)="setType4($event,i)"></textarea>
+      </ul>
+    </div>
+    <!--不定项9，单选-->
+    <div class="exam-content exam-type1 exam-type6" *ngIf="exam.typeShow==9">
+        <ul *ngFor="let e of getContent2();let i=index">
+          <li *ngFor="let f of getContent2Sub(e);let j=index" tappable (click)="setType9(i,j)">
+            <span *ngIf="j==0" [innerHtml]="f"></span>
+            <div *ngIf="j>0" [class]="getType6(i,j)">{{f.substring(0,1)}}</div>
+            <span *ngIf="j>0" [innerHtml]="f.substring(2)"></span>
+          </li>
+        </ul>
+    </div>
+
+  </div>
+  <div class="ans-key" tappable (click)="ans?ans=false:ans=true" [hidden]="this.time>0">
+    {{ans?'查看解析':'收起解析'}}<div [class]="ans?'down':'down up'"></div>
+  </div>
+  <div class="ans" [hidden]="ans">
+    <span>答案：<button class="handcbt" tappable (click)="handc()" [hidden]="!(exam.done==3)">手动判断</button></span>
+    <h1 [innerHtml]="exam.answer"></h1>
+    <div class="ans-back">
+      <span>解析：</span>
+      <div class="ans-bt" tappable (click)="sendError()"><div class="ig1"></div><span>问题反馈</span></div>
+    </div>
+    <h2 [innerHtml]="exam.answerKey"></h2>
+    <div class="ans-bt" tappable (click)="getNote()"><div class="ig2"></div><span>查看所有笔记</span></div>
+  </div>
+</ion-content>
+<ion-footer [hidden]="all==0||title=='look'">
+  <div class="exam-bt">
+  <button (click)="prev()">
+    <div></div>上一题
+  </button>
+  <button (click)="getDtk()">
+    <div></div>答题卡
+  </button>
+  <button (click)="setGet()" tappable [hidden]="time>0">
+    <div [class]="get?'exam-botton-get':''"></div>收藏
+  </button>
+  <button (click)="next()">
+    <div></div>下一题
+  </button>
+  </div>
+</ion-footer>

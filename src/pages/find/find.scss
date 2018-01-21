@@ -1,0 +1,21 @@
+page-find{
+    .find-item{
+        width:100%;
+        padding:10px;
+        background-color: #fff;
+        border-bottom: 1px solid #ccc;
+        .item-tit{
+            overflow: normal !important;
+            word-wrap: break-word !important;
+            word-break: normal !important;
+        }
+        .item-cot{
+            margin:10px 0px;
+            color:#999;
+        }
+        .item-ans{
+        }
+    }
+  }
+
+

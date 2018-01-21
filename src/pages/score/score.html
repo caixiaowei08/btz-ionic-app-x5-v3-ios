@@ -1,0 +1,48 @@
+<ion-header>
+  <ion-navbar style="padding-top: 20px;">
+    <ion-title style="padding-top: 14px;padding-bottom: 2px;">得分</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content no-padding>
+  <div class="score-bg" *ngIf="mode==0">
+    <div class="score-cir">
+      {{score}}
+    </div>
+    正确率=做对数量/已做数量
+  </div>
+  <div class="score-bg1" *ngIf="mode>0">
+      <div class="score-cir">
+        {{score}}
+      </div>
+    </div>
+  <div class="score-bl"></div>
+  <div class="score-tb">
+    <table>
+      <tr>
+        <!--
+        <td></td><td>做对试题</td><td>做错试题</td><td>分值</td><td>得分</td>
+        -->
+        <td></td><td>做对</td><td>做错</td><td *ngIf="mode==0">正确率</td><td *ngIf="mode>0">分值</td><td *ngIf="mode>0">得分</td>
+      </tr>
+      <tr *ngFor="let r of res">
+        <td>{{r.typeName}}</td>
+        <td style="color:#10bc8c">{{getSum(r.right)}}</td>
+        <td style="color:#f25d5f">{{getSum(r.wrong)}}</td>
+        <td *ngIf="mode==0">{{getSum(r.right+r.wrong==0?0:r.right*100/(r.right+r.wrong))}}%</td>
+        <td *ngIf="mode>0">{{getSum(r.value)}}</td>
+        <td *ngIf="mode>0">{{getSum(r.right+r.wrong==0?0:r.right*r.value/(r.right+r.wrong))}}</td>
+        <!--
+        <td *ngIf="r.right+r.wrong>0">{{r.value}}</td>
+        <td *ngIf="r.right+r.wrong>0">{{r.right*r.value}}</td>
+        -->
+      </tr>
+    </table>
+
+  </div>
+</ion-content>
+<ion-footer>
+    <div class="score-bt">
+        <div class="green" tappable (click)="getAll()">全部解析</div>
+        <div class="red" tappable (click)="getWrong()">错题解析</div>
+      </div>
+</ion-footer>

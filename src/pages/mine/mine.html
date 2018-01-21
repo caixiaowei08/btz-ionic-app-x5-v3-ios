@@ -1,0 +1,39 @@
+<ion-content no-padding>
+  <ion-list>
+    <ion-item class="user">
+      <img src="assets/images/user.png"/>
+      <p>{{user}}</p>
+    </ion-item>
+  </ion-list>
+  <ion-list class="minelist" no-lines>
+    <button ion-item (click)="goMsg()">
+      <ion-label>我的消息</ion-label>
+      <ion-badge item-end color="danger" *ngIf="newmsg">new</ion-badge>
+      <!--<ion-badge item-end color="danger">23</ion-badge>-->
+    </button>
+    <button ion-item (click)="goFind()">
+      <ion-label>题目搜索</ion-label>
+    </button>
+    <button  *ngIf="showInAppPurchase" ion-item (click)="goBuyVip()">
+      <ion-label>购买会员</ion-label>
+    </button>
+  </ion-list>
+  <ion-list class="minelist" no-lines>
+    <button ion-item (click)="goVideo()">
+      <ion-label>离线视频</ion-label>
+    </button>
+    <ion-item>
+      <ion-toggle [(ngModel)]=darkmode (ionChange)="dark()"></ion-toggle>
+      <ion-label>夜间模式</ion-label>
+    </ion-item>
+    <button ion-item (click)="logout()">
+      <ion-label>退出登录</ion-label>
+    </button>
+  </ion-list>
+
+  <ion-list class="minelist" no-lines>
+    <ion-item>
+      <ion-label>版本号&nbsp;&nbsp;&nbsp;&nbsp;v2.3.0</ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

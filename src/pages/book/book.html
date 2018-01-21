@@ -1,0 +1,26 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>所有科目</ion-title>
+    <ion-buttons left>
+      <button ion-button icon-only (click)="dismiss()">
+        <ion-icon name="md-close"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+<ion-content no-padding>
+  <ion-segment [(ngModel)]="seg">
+    <ion-segment-button *ngFor="let sub of subs;let i=index" [value]="i">
+    {{sub.tit}}
+    </ion-segment-button>
+  </ion-segment>
+  <div [ngSwitch]="seg" class="sgc">
+    <div *ngFor="let sub of subs;let i=index">
+    <ion-list *ngSwitchCase="i" no-lines>
+      <button ion-item *ngFor="let cot of sub.cot" (click)="choose(cot.str)">
+        <ion-label>{{cot.str}}</ion-label>
+      </button>
+    </ion-list>
+    </div>
+  </div>
+</ion-content>

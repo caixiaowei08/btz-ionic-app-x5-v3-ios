@@ -1,0 +1,41 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>题目筛选</ion-title>
+    <ion-buttons left>
+      <button ion-button icon-only (click)="dismiss()">
+        <ion-icon name="md-close"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+<ion-content no-padding>
+  <ion-list no-lines>
+    <ion-item>
+      <ion-toggle tappable [(ngModel)]=remembermode (ionChange)="remembermode?false:true"></ion-toggle>
+      <ion-label>背题模式</ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-toggle tappable [(ngModel)]=notdonemode (ionChange)="notdonemode?false:true"></ion-toggle>
+      <ion-label>只练习未做题目</ion-label>
+    </ion-item>
+  </ion-list>
+  <ion-list no-lines>
+    <ion-item>
+      <div class="lists-title">题目类型</div>
+      <div class="lists-button">
+        <button *ngFor="let t of types;let i=index" [class]="(i==type)?'lists-button-select':''"  tappable  (click)="type=i" [hidden]="t==''">{{t}}</button>
+      </div>
+    </ion-item>
+  </ion-list>
+  <ion-list no-lines>
+    <ion-item>
+      <div class="lists-title ">选择做题数量</div>
+      <div class="lists-button lists-button-small">
+        <button *ngFor="let s of sums;let i=index" [class]="(s==sum)?'lists-button-select':''"  tappable (click)="sum=s">{{(i==0)?'全部':s}}</button>
+      </div>
+    </ion-item>
+  </ion-list>
+</ion-content>
+<ion-footer>
+  <button tappable (click)="choose()">开始做题</button>
+</ion-footer>

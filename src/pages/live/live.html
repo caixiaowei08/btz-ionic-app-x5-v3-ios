@@ -1,0 +1,47 @@
+<ion-header>
+  <ion-navbar style="min-height: 60px !important;padding: 5px;" >
+    <ion-title>{{subject.name}}</ion-title>
+  </ion-navbar>
+  <ion-segment [(ngModel)]="seg">
+    <ion-segment-button value="s1" class="segment-button-midd">
+    录播课程
+    </ion-segment-button>
+    <ion-segment-button value="s2">
+    直播课程
+    </ion-segment-button>
+  </ion-segment>
+</ion-header>
+<ion-content no-padding>
+  <div [ngSwitch]="seg">
+    <div *ngSwitchCase="'s1'">
+      <page-null *ngIf="video!=null&&video.length==0"></page-null>
+      <ion-list no-lines *ngIf="video!=null">
+        <div class="dlist" *ngFor="let v of video;let i = index">
+          <input type="checkbox" hidden id="s{{i}}" tappable [checked]="i==0?true:false"/>
+          <label for="s{{i}}" class="dlist-title">
+            <ul>{{v.time}}</ul>
+            <ul><ion-icon name="ios-arrow-dropdown" color="top"></ion-icon><ion-icon name="ios-arrow-dropup"  color="top" hidden></ion-icon></ul>
+          </label>
+          <button ion-item *ngFor="let v of v.list;let j=index" tappable (click)="choose(i,j)">
+            <div class="dlist-content">
+              <img src="assets/images/play.png"/>
+              <div>{{v.title}}<p>{{v.teach}}</p></div>
+            </div>
+          </button>
+        </div>
+      </ion-list>
+    </div>
+    <div *ngSwitchCase="'s2'">
+      <page-null *ngIf="live!=null&&live.length==0"></page-null>
+      <ion-list no-lines *ngIf="live!=null">
+        <button ion-item *ngFor="let l of live;let i=index" tappable (click)="goLive(i)">
+          <div class="dlist-content">
+            <img src="assets/images/play.png"/>
+            <div>{{l.title}}<p>{{l.teacherName}}</p></div>
+          </div>
+        </button>
+      </ion-list>
+    </div>
+
+  </div>
+</ion-content>

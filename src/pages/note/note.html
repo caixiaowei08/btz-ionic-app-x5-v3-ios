@@ -1,0 +1,26 @@
+<div class="darklayer"></div>
+<ion-header>
+  <ion-navbar>
+    <ion-title>笔记</ion-title>
+    <ion-buttons right *ngIf="this.type==7">
+      <button ion-button tappable (click)="addNote()">
+        <ion-label>添加笔记</ion-label>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+<ion-content no-padding>
+  <page-null *ngIf="notes==null||(notes!=null&&notes.length==0)"></page-null>
+  <div *ngIf="notes!=null">
+  <div class="note-content" *ngFor="let n of notes;let i=index">
+    <div class="note-info">
+      <div class="note-img"></div>
+      <div class="note-namedate"><span>{{n.userId}}</span>{{n.createTime}}</div>
+      <div class="note-zan" tappable (click)="setZan(i,n.id)">{{n.thumbsUp}}<img src="assets/images/zan.png"/></div>
+    </div>
+    <div class="note-text" tappable  (click)="goExam(n.exerciseId)">
+      {{n.notes}}
+    </div>
+  </div>
+  </div>
+</ion-content>

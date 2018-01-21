@@ -1,0 +1,16 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>答题卡</ion-title>
+    <ion-buttons left>
+      <button ion-button icon-only (click)="dismiss()">
+        <ion-icon name="md-close"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+<ion-content no-padding>
+  <div class="dtk" *ngFor="let t of type;let i=index">
+    <div class="dtk-tit" *ngIf="t.sum.length>0">{{t.tit}}</div>
+    <ul *ngFor="let i of t.sum;let j=index"  tappable [class]="getStyle(i)" (click)="choose(i)">{{j+1}}</ul>
+  </div>
+</ion-content>

@@ -1,0 +1,18 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>{{title}}<p>{{subject.name}}</p></ion-title>
+    <ion-buttons right tappable (click)="open()">
+      <button ion-button>
+        <ion-label>组卷记录</ion-label>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+<ion-content no-padding>
+  <div class="simupage">
+    <img src="assets/images/simu.png"/>
+    <div>点击后直接生成卷子<br/>
+      <button tappable (click)="get()">随机组卷</button>
+    </div>
+  </div>
+</ion-content>

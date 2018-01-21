@@ -1,0 +1,26 @@
+<div class="error">
+  <div class="error-form">
+    <div class="error-tit">问题反馈</div>
+    <div class="error-body">
+      <div>非常感谢您的反馈，请按提示填写</div>
+      <div class="error-sel">
+      错误类型
+      <ion-list no-lines>
+        <ion-item *ngFor="let s of select;let i=index">
+          <ion-label tappable (click)="seg=i">{{s}}</ion-label>
+          <ion-checkbox [checked]="seg==i?true:false" tappable (click)="seg=i"></ion-checkbox>
+        </ion-item>
+      </ion-list>
+      </div>
+    </div>
+    <div class="error-inp">
+    问题描述：<br/>
+    <textarea placeholder="请详细描述您遇到的问题" [(ngModel)]="text"></textarea>
+    </div>
+    <div class="error-bt">
+      <button (click)="send()">提交</button>
+      <button (click)="close()">关闭</button>
+    </div>
+  </div>
+</div>
+

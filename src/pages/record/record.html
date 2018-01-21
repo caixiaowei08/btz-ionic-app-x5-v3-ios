@@ -1,0 +1,17 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>组卷记录</ion-title>
+    <ion-buttons left>
+      <button ion-button icon-only tappable (click)="dismiss()">
+        <ion-icon name="md-close"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+<ion-content no-padding>
+  <ion-list>
+    <button ion-item *ngFor="let r of record;let i=index" tappable (click)="choose(i)">
+      <ion-label>{{getDate(i)}}</ion-label>
+    </button>
+  </ion-list>
+</ion-content>

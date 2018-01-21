@@ -1,0 +1,51 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>{{subject.name}}</ion-title>
+    <ion-buttons right tappable (click)="clear()">
+      <button ion-button>
+        <ion-label>清除记录</ion-label>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+<ion-content no-padding id="listtoggle" tappable>
+  <page-null *ngIf="test!=null&&test.list.length==0"></page-null>
+  <div tappable class="list" *ngIf="test!=null">
+    <h1 tappable *ngFor="let tmp of test.list">
+      <div tappable  class="cb"  *ngIf="tmp.sub.length>0"></div>
+      <h5 *ngIf="tmp.sub.length==0" tappable></h5>
+      <div tappable class="tj">
+        <p>{{tmp.tit}}</p>
+        <div class="jdt">
+          <div class="ts" tappable>{{donef(tmp.beg,tmp.all)}}/{{tmp.all}}</div>
+          <div class="have" tappable [style.width.%]="(done*100)/tmp.all"></div>
+        </div>
+      </div>
+      <button tappable (click)="choose(tmp.beg,tmp.all,tmp.tit,tmp.tryOut)"></button>
+      <h2 tappable *ngFor="let tmp of tmp.sub">
+        <div tappable class="cb"  *ngIf="tmp.sub.length>0"></div>
+        <h5 tappable *ngIf="tmp.sub.length==0" ></h5>
+        <div tappable class="tj">
+          <p>{{tmp.tit}}</p>
+          <div tappable class="jdt">
+            <div class="ts" tappable>{{donef(tmp.beg,tmp.all)}}/{{tmp.all}}</div>
+            <div class="have" tappable [style.width.%]="(done*100)/tmp.all"></div>
+          </div>
+        </div>
+        <button tappable  (click)="choose(tmp.beg,tmp.all,tmp.tit,tmp.tryOut)"></button>
+        <h3  tappable  *ngFor="let tmp of tmp.sub">
+          <h4 tappable></h4>
+          <div tappable class="tj">
+            <p>{{tmp.tit}}</p>
+            <div  tappable class="jdt">
+              <div class="ts" tappable>{{donef(tmp.beg,tmp.all)}}/{{tmp.all}}</div>
+              <div class="have" tappable [style.width.%]="(done*100)/tmp.all"></div>
+            </div>
+          </div>
+          <button tappable (click)="choose(tmp.beg,tmp.all,tmp.tit,tmp.tryOut)"></button>
+        </h3>
+      </h2>
+      <div class="hcb"></div>
+    </h1>
+  </div>
+</ion-content>

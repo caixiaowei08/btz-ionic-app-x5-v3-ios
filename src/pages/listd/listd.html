@@ -1,0 +1,99 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>{{title}}<p>{{subject.name}}</p></ion-title>
+  </ion-navbar>
+  <ion-segment [(ngModel)]="seg">
+    <ion-segment-button value="s1" class="segment-button-midd">
+      章节练习
+    </ion-segment-button>
+    <ion-segment-button value="s2">
+      核心考点
+    </ion-segment-button>
+  </ion-segment>
+</ion-header>
+<ion-content no-padding id="listdtoggle">
+  <div [ngSwitch]="seg">
+<div *ngSwitchCase="'s1'">
+  <page-null *ngIf="t1==null||(t1!=null&&t1.list.length==0)"></page-null>
+  <div class="list" *ngIf="t1!=null">
+    <h1 *ngFor="let tmp of t1.list">
+      <div tappable class="cb" *ngIf="tmp.sub.length>0"></div>
+      <h5 tappable *ngIf="tmp.sub.length==0"></h5>
+      <div class="tj">
+        <p>{{tmp.tit}}</p>
+        <div class="jdt">
+          <div tappable class="ts">{{donef(tmp.beg,tmp.all)}}/{{done}}</div>
+          <div class="have" [style.width.%]="100"></div>
+        </div>
+      </div>
+      <button tappable (click)="choose(tmp.beg,tmp.all,tmp.tit,tmp.tryOut)"></button>
+      <h2 *ngFor="let tmp of tmp.sub">
+        <div tappable class="cb" *ngIf="tmp.sub.length>0"></div>
+        <h5  tappable *ngIf="tmp.sub.length==0"></h5>
+        <div class="tj">
+          <p>{{tmp.tit}}</p>
+          <div class="jdt">
+            <div tappable class="ts">{{donef(tmp.beg,tmp.all)}}/{{done}}</div>
+            <div class="have" [style.width.%]="100"></div>
+          </div>
+        </div>
+        <button tappable (click)="choose(tmp.beg,tmp.all,tmp.tit,tmp.tryOut)"></button>
+        <h3 *ngFor="let tmp of tmp.sub">
+          <h4></h4>
+          <div class="tj">
+            <p>{{tmp.tit}}</p>
+            <div class="jdt">
+              <div tappable class="ts">{{donef(tmp.beg,tmp.all)}}/{{done}}</div>
+              <div class="have" [style.width.%]="100"></div>
+            </div>
+          </div>
+          <button tappable (click)="choose(tmp.beg,tmp.all,tmp.tit,tmp.tryOut)"></button>
+        </h3>
+      </h2>
+      <div class="hcb"></div>
+    </h1>
+  </div>
+</div>
+<div *ngSwitchCase="'s2'">
+  <page-null *ngIf="t2==null||(t2!=null&&t2.list.length==0)"></page-null>
+  <div class="list" tappable  *ngIf="t2!=null">
+    <h1 *ngFor="let tmp of t2.list">
+      <div class="cb" tappable *ngIf="tmp.sub.length>0"></div>
+      <h5 tappable *ngIf="tmp.sub.length==0"></h5>
+      <div class="tj">
+        <p>{{tmp.tit}}</p>
+        <div class="jdt">
+          <div tappable class="ts">{{donef(tmp.beg,tmp.all)}}/{{done}}</div>
+          <div class="have" [style.width.%]="100"></div>
+        </div>
+      </div>
+      <button tappable (click)="choose(tmp.beg,tmp.all,tmp.tit,tmp.tryOut)"></button>
+      <h2 *ngFor="let tmp of tmp.sub">
+        <div class="cb" tappable *ngIf="tmp.sub.length>0"></div>
+        <h5 tappable *ngIf="tmp.sub.length==0"></h5>
+        <div tappable class="tj">
+          <p>{{tmp.tit}}</p>
+          <div tappable class="jdt">
+            <div tappable class="ts">{{donef(tmp.beg,tmp.all)}}/{{done}}</div>
+            <div tappable class="have" [style.width.%]="100"></div>
+          </div>
+        </div>
+        <button tappable (click)="choose(tmp.beg,tmp.all,tmp.tit,tmp.tryOut)"></button>
+        <h3 tappable *ngFor="let tmp of tmp.sub">
+          <h4></h4>
+          <div tappable class="tj">
+            <p>{{tmp.tit}}</p>
+            <div tappable class="jdt">
+              <div tappable class="ts">{{donef(tmp.beg,tmp.all)}}/{{done}}</div>
+              <div tappable class="have" [style.width.%]="100"></div>
+            </div>
+          </div>
+          <button tappable (click)="choose(tmp.beg,tmp.all,tmp.tit,tmp.tryOut)"></button>
+        </h3>
+      </h2>
+      <div tappable class="hcb"></div>
+    </h1>
+  </div>
+</div>
+  </div>
+</ion-content>

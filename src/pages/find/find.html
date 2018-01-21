@@ -1,0 +1,21 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>题目搜索</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content no-padding>
+  <div style="width: 100%;height: 44px;" >
+    <div style="width: 80%;display: inline;float: left;">
+      <ion-searchbar color="secondary" style="background: #488aff !important;" placeholder="请输入题目关键词！">
+      </ion-searchbar>
+    </div>
+    <div style="padding:0px;margin:0px;height:44px;display: inline;float: left;text-align: center;vertical-align: inherit;line-height: 44px;font-size: 2rem;font-weight: bold;width: 20%;">
+      <button  style="height: 44px !important;margin: 0px !important;padding: 0px !important;" ion-button full (click)="getItems($event)">搜索</button>
+    </div>
+  </div>
+
+  <div class="find-item" *ngFor="let item of items;let i=index">
+    <div class="item-tit" [innerHtml]="'('+(i+1)+').'+item.title"></div>
+    <div class="item-cot" [innerHtml]="item.content"></div>
+  </div>
+</ion-content>

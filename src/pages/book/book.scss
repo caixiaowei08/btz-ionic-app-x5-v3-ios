@@ -1,0 +1,35 @@
+page-book {
+    ion-segment{
+        width:35%;
+        height:100%;
+        overflow: scroll;
+        flex-flow: column !important;
+        justify-content: flex-start !important;
+    }
+    ion-segment .segment-button{
+        width:100% !important;
+        flex:none !important;
+        font-size:14px !important;
+        height:50px !important;
+        line-height:50px !important;
+        border:0px !important;
+        color:#000 !important;
+    }
+    ion-segment .segment-activated{
+        color:color($colors,top) !important;
+        background-color:#fff !important;
+    }
+    .sgc{
+        width:65%;
+        height:100%;
+        background-color: #fff;
+        position: absolute;
+        left:35%;
+        top:0;
+        overflow: scroll;
+        ion-label{
+            font-size:14px !important;
+        }
+    }
+
+}

@@ -1,14 +1,64 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>
-      Ionic Blank
+    <ion-title  tappable (click)="choose()" style="text-align:center;padding: 20px 20px 1px;">
+      {{fixtit(subject.name)}}&nbsp;<span style="font-size: small">[切换课程]</span><div class="bookbt"></div>
     </ion-title>
   </ion-navbar>
 </ion-header>
+<div id="bookpage">
+  <div id="bookp1">
+    <div *ngFor="let s of subs;let i=index"  tappable (click)="seg=i" [class]="i==seg?'activated':''">
+      {{s.mainCourseAppName}}
+    </div>
+  </div>
+  <div id="bookp2">
+    <div *ngFor="let s of subs;let i=index">
+    <div *ngIf="i==seg">
+      <div *ngFor="let s of s.children;let j=index"  tappable (click)="setSubject(i,j)" [class]="i==segi&&j==segj?'activatedd':''">
+      <button ion-item >
+        <ion-label>{{s.subCourseName}}</ion-label>
+      </button>
+      </div>
+    </div>
+    </div>
+  </div>
+</div>
+<ion-content no-padding>
+  <div class="score" style="background-image: url(assets/images/headb.jpg)">
+    <ul style="background-image: url(assets/images/head.jpg)">
+      <li>
+        <p>答对</p>
+        <span>{{score.right}}</span>
+      </li>
+      <li>
+        <p>已做题数</p>
+        <span>{{score.all}}</span>
+      </li>
+      <li>
+        <p>答错</p>
+        <span>{{score.all-score.right}}</span>
+      </li>
+    </ul>
+  </div>
 
-<ion-content padding>
-  The world is your oyster.
-  <p>
-    If you get lost, the <a href="http://ionicframework.com/docs/v2">docs</a> will be your guide.
-  </p>
+  <ion-slides autoplay=6000 speed=2000>
+    <ion-slide *ngFor="let s of slides;let i = index" [style.background-image]="getslide(i)"  tappable (click)="slidec()"></ion-slide>
+  </ion-slides>
+
+  <div class="card">
+    <ul *ngFor="let card of cards;let i = index" [style.background-image]="card.pic" tappable (click)="list(i)" [hidden]="subsItem[i]==0">
+      <div>{{card.tit}}<p>{{card.txt}}</p></div>
+    </ul>
+    <ul class="card-li">
+      <li tappable style="background-image:url(assets/images/item6.png)" tappable (click)="list(10)">
+      错题
+      </li>
+      <li tappable style="background-image:url(assets/images/item7.png)" tappable (click)="list(11)">
+      收藏
+      </li>
+      <li tappable style="background-image:url(assets/images/item8.png)" tappable (click)="list(12)">
+      笔记
+      </li>
+    </ul>
+  </div>
 </ion-content>

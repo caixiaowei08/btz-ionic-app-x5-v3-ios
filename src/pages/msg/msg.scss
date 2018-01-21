@@ -1,0 +1,40 @@
+page-msg {
+    .msg-content{
+        background-color: #fff;
+        padding:15px;
+        border-bottom: 1px solid #f1f1f1;
+    }
+    .msg-time{
+        font-size:12px;
+        color:#ccc;
+        display: flex;
+        justify-content:space-between;
+        align-items: center;
+        button{
+            margin-left:5px;
+            background-color:color($colors,top);
+            color:#fff;
+            border-radius: 5px;
+        }
+    }
+    .msg-info{
+        background-color: #F9F9D6;
+        padding:10px;
+        margin:8px 5px;
+        .msg-info-time{
+            font-size:12px;
+            color:#ccc;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content:space-between;
+            align-items: center;
+        }
+    }
+    .msg-ans{
+        margin-left:5px;
+        span{
+            color:#ccc;
+            font-size:12px;
+        }
+    }
+}
