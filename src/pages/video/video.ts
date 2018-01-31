@@ -71,7 +71,7 @@ export class VideoPage {
 
   contains(av, v) {
     for (var i = 0; i < av.length; i++) {
-      if (av[i] == v) {
+      if (av[i] === v) {
         return true;
       }
     }
@@ -165,7 +165,8 @@ export class VideoPage {
   ionViewDidEnter() {
     let video = $("#video")[0];
     this.httpstorage.getStorage("pl", (data) => {
-      if (data == null) {
+
+      if (data === null) {
         data = [];
         this.httpstorage.setStorage("pl", data);
       }
@@ -173,7 +174,7 @@ export class VideoPage {
         for (let i = 0; i < this.videos.length; i++) {
           for (let j = 0; j < this.videos[i].list.length; j++) {
             for (let v of data) {
-              if (this.videos[i].list[j].id == v.id) {
+              if (this.videos[i].list[j].id === v.id) {
                 this.videos[i].list[j].done = v.done;
                 this.videos[i].list[j].time = v.time;
                 if (v.flg) {
@@ -186,13 +187,14 @@ export class VideoPage {
           }
         }
       }
+
       this.video = this.videos[this.si].list[this.sj];
       if (this.video !== undefined) {
         this.title = this.video.title;
         if (this.isOk(this.video)) {
-          if (this.getDown(this.video.id) == 1) {
+          if (this.getDown(this.video.id) === 1) {//已下载
             this.url = this.file.dataDirectory + this.video.id + '.mp4';
-            this.url =  this.url.replace("file://","");
+            this.url = this.url.replace("file://", "");
           }
           else {
             this.url = this.video.videoUrl;
@@ -211,7 +213,7 @@ export class VideoPage {
         for (let j = 0; j < this.videos[i].list.length; j++) {
           let flg = true;
           for (let v of data) {
-            if (this.videos[i].list[j].id == v.id) {
+            if (this.videos[i].list[j].id === v.id) {
               v.done = this.videos[i].list[j].done;
               v.time = this.videos[i].list[j].time;
               v.flg = 0;
@@ -256,9 +258,7 @@ export class VideoPage {
       this.title = this.video.title;
       if (this.getDown(this.video.id) == 1) {
         this.url = this.file.dataDirectory + this.video.id + '.mp4';
-        this.url =  this.url.replace("file://","");
-        console.log(this.url);
-
+        this.url = this.url.replace("file://", "");
       }
       else {
         this.url = this.video.videoUrl;
@@ -304,16 +304,20 @@ export class VideoPage {
 
   setOpera(i, j) {
     let v = this.videos[i].list[j];
+    console.log(v);
+
     let down = this.getDown(v.id);
-    if (down == 0) {
+    if (down === 0) {
       this.downqueue.push(v);
-      if (this.downqueue.length == 1) this.download();
+      if (this.downqueue.length === 1) {
+        this.download();
+      }
     }
-    else if (down == 1) {
-      this.file.removeFile(this.file.dataDirectory, v.id + '.mp4').then((data)=>{
-        console.log("remove file success:"+data);
-      }).catch((err)=>{
-        console.log("remove file err:"+err);
+    else if (down === 1) {
+      this.file.removeFile(this.file.dataDirectory, v.id + '.mp4').then((data) => {
+        console.log("remove file success:" + data);
+      }).catch((err) => {
+        console.log("remove file err:" + err);
       });
       let idx = 0;
       for (let i = 0; i < this.vd.length; i++) {
@@ -322,16 +326,16 @@ export class VideoPage {
           break;
         }
       }
-      this.vd.splice(i, 1);
+      this.vd.splice(i, 1);//?这是什么 看不懂啊
       this.httpstorage.setStorage("vd", this.vd);
     }
-    else if (down == 2) {
+    else if (down === 2) {
       this.fileTransfer.abort();
     }
     else {
       let idx = 0;
       for (let i = 0; i < this.downqueue.length; i++) {
-        if (this.downqueue[i].id == v.id) {
+        if (this.downqueue[i].id ===  v.id) {
           idx = i;
           break;
         }

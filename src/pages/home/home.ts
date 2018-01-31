@@ -170,32 +170,19 @@ export class HomePage {
         moduleType = 0;
         break;
     }
-    //this.setSubsItem(null,type);
-    //if(time!=0&&time<currentTime) this.setSubsItem(0,type);
-    //else
+
     if (id != 0) {
       this.httpstorage.getHttp('/app/appModuleController.do?getModuleBySubCourseIdAndModuleType&subCourseId=' + id + '&moduleType=' + moduleType, (data) => {
         if (data != null) { //有网
           if (data.returnCode) { //有数据
             this.subsItem[type - 1] = 1;
             //如果本地没有，则保存版本号
-            /*
-            let tmp=data.content.versionNo;
-            this.httpstorage.getStorage("s"+id+"i"+type+"v",(data)=>{
-              if(data==null) this.httpstorage.setStorage("s"+id+"i"+type+"v",tmp);
-            })
-            */
             let tmp = data.content.alias;
             this.cards[type - 1].tit = tmp;
             this.httpstorage.setStorage("s" + id + "i" + type + "n", tmp);
           }
         }
         else {//无网，从本地加载
-          /*
-          this.httpstorage.getStorage("s"+id+"i"+type+"v",(data)=>{
-              if(data!=null) this.subsItem[type-1]=1;
-          })
-          */
           this.httpstorage.getStorage("s" + id + "i" + type + "n", (data) => {
             if (data != null) {
               this.subsItem[type - 1] = 1;
@@ -205,7 +192,6 @@ export class HomePage {
         }
       })
       //试题策略
-      //this.httpstorage.getHttp('/app/strategyController.do?doGetAllNotesByExerciseId&subCourseId='+id,(data)=>{
       this.httpstorage.getHttp('/app/strategyController.do?doGetStrategyBySubCourseId&subCourseId=' + id, (data) => {
         if (data != null && data.returnCode) {
           this.httpstorage.setStorage("s" + id + "s", data.content);
@@ -215,8 +201,6 @@ export class HomePage {
   }
 
   getSlides() {
-    //this.slide.stopAutoplay();
-    //this.httpstorage.getHttp('/app/carouselController.do?getCarousel',(data)=>{
     this.httpstorage.getHttp('/app/carouselController.do?getCarousel&subCourseId=' + this.subject.id, (data) => {
       if (data != null) {
         if (data.returnCode) {
@@ -292,15 +276,7 @@ export class HomePage {
   }
 
   ionViewDidLoad() {
-    //console.log(1);
     this.slide.autoplayDisableOnInteraction = false;
-    /*
-    this.slide.autoplay=6000;
-    this.slide.speed=2000;
-    this.slide.autoplayDisableOnInteraction=false;
-    this.slide.startAutoplay();
-    */
-    //获取题目对错
   }
 
   ionViewDidEnter() {
@@ -308,7 +284,6 @@ export class HomePage {
     setTimeout(function () {
       getScore();
     }, 500)
-    //this.slide.startAutoplay();
   }
 
   ionViewDidLeave() {
@@ -321,16 +296,24 @@ export class HomePage {
       if (data != null) {
         let tmp = data.exam;
         for (let i = 0; i < tmp.length; i++) {
-          if (tmp[i].done > 0 && tmp[i].done < 3) all++;
-          if (tmp[i].done == 1) right++;
+          if (tmp[i].done > 0 && tmp[i].done < 3) {
+            all++;
+          }
+          if (tmp[i].done == 1) {
+            right++;
+          }
         }
       }
       this.httpstorage.getStorage("s" + this.subject.id + "i2", (data) => {
         if (data != null) {
           let tmp = data.exam;
           for (let i = 0; i < tmp.length; i++) {
-            if (tmp[i].done > 0 && tmp[i].done < 3) all++;
-            if (tmp[i].done == 1) right++;
+            if (tmp[i].done > 0 && tmp[i].done < 3) {
+              all++;
+            }
+            if (tmp[i].done == 1) {//作答正确
+              right++;
+            }
           }
         }
         this.score.all = all;
