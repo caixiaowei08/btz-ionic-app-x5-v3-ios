@@ -21,12 +21,14 @@ export class ListsPage {
   sum: any;
   types: any;
   sums: any;
+  moduleType: any;
 
   constructor(public httpstorage: HttpStorage, public viewCtrl: ViewController, public navCtrl: NavController, public navParams: NavParams) {
     this.subject = this.navParams.get('subject');
     this.title = this.navParams.get('title');
     this.exams = this.navParams.get('exams');
     this.beg = this.navParams.get('beg');
+    this.moduleType = this.navParams.get('moduleType');
     this.saveQuestionRecord = this.navParams.get('saveQuestionRecord');
     this.all = this.navParams.get('all');
     this.exam = new Array();
@@ -104,6 +106,8 @@ export class ListsPage {
       saveQuestionRecord: this.saveQuestionRecord,
       title: this.title,
       exams: this.exam,
+      allExams: this.exams,
+      moduleType: this.moduleType,
       mode: this.remembermode,
       time: 0
     }).then(() => {

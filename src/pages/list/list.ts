@@ -31,7 +31,6 @@ export class ListPage {
     this.loader.present();
     this.covertToServiceModuleType(this.type);
     this.getSubsItem(this.subject, this.type);
-
   }
 
 
@@ -58,7 +57,6 @@ export class ListPage {
         break;
     }
   }
-
 
   getSubsItem(subject: any, type: any) {
     let this_ = this;
@@ -315,15 +313,6 @@ export class ListPage {
     return this.done;
   }
 
-  /*
-  callback = (params) =>{
-    return new Promise((resolve, reject)=>{
-      this.test.exam=params;
-      resolve();
-    })
-  }
-  */
-
   choose(beg: number, all: number, tit: string, tryOut: any) {
     if (tryOut || (this.subject.exam && this.subject.time >= new Date().getTime())) {
       if (this.type == 1 || this.type == 2) {
@@ -332,6 +321,7 @@ export class ListPage {
           saveQuestionRecord: this.saveQuestionRecord.bind(this),
           title: tit,
           exams: this.test.exam,
+          moduleType: this.moduleType,
           beg: beg,
           all: all
         });
@@ -364,6 +354,7 @@ export class ListPage {
             title: this.title,
             exams: exam,
             saveQuestionRecord: this.saveQuestionRecord.bind(this),
+            moduleType: this.moduleType,
             mode: false,
             time: totalTime
           });
@@ -420,11 +411,9 @@ export class ListPage {
 
   saveQuestionRecord() {
     var this_ = this;
-    setTimeout(function () {
-      if (this_.type == 1 || this_.type == 2 || this_.type == 4 || this_.type == 5) {
-        this_.httpstorage.setStorage("s" + this_.subject.id + "i" + this_.type, this_.test);
-      }
-    }, 500);
+    if (this_.type == 1 || this_.type == 2 || this_.type == 4 || this_.type == 5) {
+      this_.httpstorage.setStorage("s" + this_.subject.id + "i" + this_.type, this_.test);
+    }
   }
 
   /**
@@ -461,5 +450,6 @@ export class ListPage {
       });
     }
   }
+
 
 }

@@ -225,7 +225,6 @@ export class HomePage {
   slidec() {
     let index = this.slide.realIndex;
     this.navCtrl.push(FramePage, {title: '百题斩', url: this.slides[index].url});
-    //this.navCtrl.push(FramePage,{title:'百题斩',url:url});
   }
 
   getslide(i) {
@@ -233,8 +232,6 @@ export class HomePage {
   }
 
   choose() {
-    //let modal = this.modalCtrl.create(BookPage, {subject: this.subject});
-    //modal.present();
     $(".tabbar").toggle();
     $(".bookbt").toggleClass("bookbtt");
     $("#bookpage").slideToggle("normal");
@@ -272,7 +269,6 @@ export class HomePage {
         this.navCtrl.push(NotePage, {subject: this.subject, type: n});
         break;
     }
-    //this.navCtrl.push(ListPage,{subject:this.subject,type:str});
   }
 
   ionViewDidLoad() {

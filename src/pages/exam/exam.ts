@@ -1,5 +1,5 @@
-import {Component} from '@angular/core';
-import {ViewController, ModalController, AlertController, NavController, NavParams} from 'ionic-angular';
+import {Component, ViewChild} from '@angular/core';
+import {ViewController, ModalController, AlertController, NavController, NavParams, Navbar} from 'ionic-angular';
 import {NullPage} from '../null/null';
 import {NotePage} from '../note/note';
 import {ScorePage} from '../score/score';
@@ -33,6 +33,9 @@ export class ExamPage {
   token: any;
   jsq: any;
   moduleType: any;
+  comeFrom: any;
+
+  @ViewChild(Navbar) navBar: Navbar;//直接获取navBar 子组件
 
   constructor(public viewCtrl: ViewController, public modalCtrl: ModalController, public alertCtrl: AlertController, public navCtrl: NavController, public navParams: NavParams, public httpstorage: HttpStorage) {
     this.subject = this.navParams.get('subject');
@@ -40,6 +43,7 @@ export class ExamPage {
     this.exams = this.navParams.get('exams');
     this.mode = this.navParams.get('mode');
     this.moduleType = this.navParams.get("moduleType");
+    this.comeFrom = this.navParams.get("comeFrom");
     this.saveQuestionRecord = this.navParams.get('saveQuestionRecord');
     this.time = this.navParams.get("time");
     if (this.mode != 2 && this.time == 0) {
@@ -63,7 +67,9 @@ export class ExamPage {
           tmp--;
           getTime(tmp);
         }
-        else checkAll();
+        else {
+          checkAll();
+        }
       }, 1000)
     }
     this.id = 0;
@@ -534,7 +540,6 @@ export class ExamPage {
           text: '确认',
           handler: data => {
             this.exam.done = parseFloat(data);
-            console.log(data);
           }
         }
       ]
@@ -593,6 +598,7 @@ export class ExamPage {
       subject: this.subject,
       title: this.title,
       exams: this.exams,
+      comeFrom:this.comeFrom,
       mode: this.time,
       check: this.check,
       moduleType: this.moduleType,
@@ -754,5 +760,37 @@ export class ExamPage {
     alert.present();
   }
 
+  //返回键监听
+  ionViewDidLoad() {
+    this.navBar.backButtonClick = this.backButtonClick;
+  }
+
+  backButtonClick = (e: UIEvent) => {
+    let this_ = this;
+    if (this_.comeFrom !== undefined && (this_.comeFrom === 1 || this_.comeFrom === 2)) {
+      this_.navCtrl.pop();
+      return;
+    }
+
+    let prompt = this_.alertCtrl.create({
+      title: '提示',
+      subTitle: '是否交卷并保存做题记录?',
+      buttons: [
+        {
+          text: '取消',
+          handler: data => {
+            //do nothing
+          }
+        },
+        {
+          text: '确定',
+          handler: data => {
+            this_.checkAll();
+          }
+        }
+      ]
+    });
+    prompt.present();
+  }
 
 }

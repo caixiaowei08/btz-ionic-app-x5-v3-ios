@@ -22,6 +22,7 @@ export class ScorePage {
   title: any;
   hand: any;
   saveQuestionRecord: any;
+  comeFrom: any;
 
   constructor(public alertCtrl: AlertController, private navCtrl: NavController, public navParams: NavParams, public httpStorage: HttpStorage) {
     this.exams = this.navParams.get("exams");
@@ -29,6 +30,7 @@ export class ScorePage {
     this.check = this.navParams.get("check");
     this.subject = this.navParams.get("subject");
     this.title = this.navParams.get("title");
+    this.comeFrom = this.navParams.get("comeFrom");
     this.moduleType = this.navParams.get("moduleType");
     this.saveQuestionRecord = this.navParams.get("saveQuestionRecord");
     this.score = 0;
@@ -45,12 +47,9 @@ export class ScorePage {
     for (let v of this.exams) {
       this.exam = v;
       this.check();
+
       if (this.exam.done == 3) {
         this.hand = true;
-      }
-
-      if ((this.exam.set != null && this.exam.set.length > 0) || (this.exam.get > 0)) {
-        this.saveSingleQuestionRecordByAppTokenAndExerciseId(this.exam);
       }
 
       let flg = true;
@@ -124,11 +123,14 @@ export class ScorePage {
             }
           }
         ]
-      })
+      });
       prompt.present();
     }
+
     this.saveQuestionRecord();
+    this.sendAllRecordToServce();
   }
+
 
   getSum(v) {
     if (v - parseInt(v) > 0) {
@@ -208,6 +210,46 @@ export class ScorePage {
       buttons: ['好']
     });
     alert.present();
+  }
+
+  //转换moduleType
+  covertModuleTypeToType(moduleType) {
+    switch (moduleType) {
+      case 1:
+        return 1;//章节练习
+      case 2:
+        return 2;//核型考点
+      case 3:
+        return 3;//模拟考题
+      case 4:
+        return 4;//考前押题
+      case 7:
+        return 5;//历年真题
+      default:
+        return 0;
+    }
+  }
+
+  sendAllRecordToServce() {
+    let this_ = this;
+
+    if (this_.comeFrom !== undefined && (this_.comeFrom === 1 || this_.comeFrom === 2)) {
+      return;
+    }
+
+    setTimeout(function () {
+      if (this_.moduleType !== null && (this_.moduleType === 1 || this_.moduleType === 2 || this_.moduleType === 4 || this_.moduleType === 7)) {
+        this_.httpStorage.getStorage("s" + this_.subject.id + "i" + this_.covertModuleTypeToType(this_.moduleType), (data) => {
+          if (data != null) {
+            for (let examItem of data.exam) {
+              if ((examItem.set != null && examItem.set.length > 0) || (examItem.get > 0)) {
+                this_.saveSingleQuestionRecordByAppTokenAndExerciseId(examItem);
+              }
+            }
+          }
+        });
+      }
+    }, 500);
   }
 
 }

@@ -1,9 +1,7 @@
 import {Component} from '@angular/core';
 import {AlertController, ModalController, NavController, NavParams} from 'ionic-angular';
 import {HttpStorage} from '../../providers/httpstorage';
-//import { ListsPage } from '../lists/lists';
 import {ExamPage} from '../exam/exam';
-import {NullPage} from '../null/null';
 
 import * as $ from "jquery";
 
@@ -42,8 +40,6 @@ export class ListDPage {
       this.t2 = data;
       this.t2ok = true;
     });
-
-
   }
 
   ionViewDidLoad() {
@@ -91,7 +87,7 @@ export class ListDPage {
       this.oexam = [];
       let tmp = this.seg == 's1' ? this.t1.exam : this.t2.exam;
       for (var i = beg; i < beg + all; i++) {
-        if (this.type == 10) {
+        if (this.type == 10) {//错题重做
           if (tmp[i].done == 2 || (tmp[i].done > 0 && tmp[i].done < 1)) {
             this.oexam.push({id: tmp[i].id, done: tmp[i].done, set: tmp[i].set})
             tmp[i].done = 0;
@@ -99,7 +95,7 @@ export class ListDPage {
             this.exam.push(tmp[i]);
           }
         }
-        else {
+        else {//关注
           if (tmp[i].get > 0) {
             this.oexam.push({id: tmp[i].id, done: tmp[i].done, set: tmp[i].set});
             tmp[i].done = 0;
@@ -108,7 +104,18 @@ export class ListDPage {
           }
         }
       }
-      this.navCtrl.push(ExamPage, {subject: this.subject, title: tit, exams: this.exam, mode: false, time: 0});
+
+      this.navCtrl.push(ExamPage, {
+        subject: this.subject,
+        title: tit,
+        comeFrom: 1,
+        saveQuestionRecord: this.saveQuestionRecord.bind(this),
+        exams: this.exam,
+        moduleType: this.seg == 's1' ? 1 : 2,
+        mode: false,
+        time: 0
+      });
+
     }
     else {
       let prompt = this.alertCtrl.create({
@@ -132,7 +139,6 @@ export class ListDPage {
         for (let w of this.oexam) {
           if (v.id == w.id) {
             if (v.done == 0 || v.done == 3) {
-              console.log(w)
               v.done = w.done;
               v.set = w.set;
             }
@@ -143,11 +149,30 @@ export class ListDPage {
     }
   }
 
-  //保存
+  //保存本地
   ionViewWillUnload() {
-    if (this.t1ok && this.t2ok) {
+
+    if (this.t1ok) {
       this.httpstorage.setStorage("s" + this.subject.id + "i1", this.t1);
+    }
+
+    if (this.t2ok) {
       this.httpstorage.setStorage("s" + this.subject.id + "i2", this.t2);
     }
+
   }
+
+  //保存
+  saveQuestionRecord() {
+    /*  console.log("----AAA---");
+        if (this.t1ok) {
+          this.httpstorage.setStorage("s" + this.subject.id + "i1", this.t1);
+        }
+
+        if (this.t2ok) {
+          this.httpstorage.setStorage("s" + this.subject.id + "i2", this.t2);
+        }*/
+  }
+
+
 }
