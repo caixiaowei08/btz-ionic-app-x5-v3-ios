@@ -2,32 +2,49 @@
   <ion-navbar>
     <ion-title>{{title}}</ion-title>
   </ion-navbar>
-  <video id="video" [src]="url" tappable class="video-js vjs-big-play-centered" (timeupdate)="getJd($event)" preload="auto" (canplay)="canPlay($event)"
-         controls="controls" controlsList="nodownload" playsinline webkit-playsinline>
-  </video>
+  <!--<video id="video" [src]="url" tappable class="video-js vjs-big-play-centered" (timeupdate)="getJd($event)" preload="auto" (canplay)="canPlay($event)"-->
+  <!--controls="controls" controlsList="nodownload" playsinline webkit-playsinline>-->
+  <!--</video>-->
+  <div style="height: 250px;width: 100%;">
+    <vg-player>
+      <vg-overlay-play></vg-overlay-play>
+      <vg-controls [vgAutohide]="true" [vgAutohideTime]="2" style="height: 30px;">
+        <vg-play-pause style="height: 30px;line-height: 30px;width: 30px;"></vg-play-pause>
+        <vg-time-display style="height: 30px;line-height: 30px;width:40px;font-size: 8px;" vgProperty="current"
+                         vgFormat="hh:mm:ss">
+        </vg-time-display>
+        <vg-scrub-bar style="height: 30px;line-height: 30px;">
+          <vg-scrub-bar-current-time></vg-scrub-bar-current-time>
+          <vg-scrub-bar-buffering-time></vg-scrub-bar-buffering-time>
+        </vg-scrub-bar>
+        <vg-time-display style="height: 30px;line-height: 30px;width:40px;font-size: 8px;" vgProperty="total"
+                         vgFormat="hh:mm:ss">
+        </vg-time-display>
+        <vg-fullscreen #fullscreen style="height: 30px;line-height: 30px;width: 30px;"></vg-fullscreen>
+      </vg-controls>
+      <video [vgMedia]="onlineVideo" #onlineVideo id="video" [src]="url" preload="auto" playsinline webkit-playsinline
+             (timeupdate)="getJd($event)" (canplay)="canPlay($event)">
+      </video>
+    </vg-player>
+  </div>
+
+
   <ion-segment [(ngModel)]="seg">
     <ion-segment-button value="s1" class="segment-button-midd">
-    视频
+      视频
     </ion-segment-button>
     <ion-segment-button value="s2">
-    讲义
+      讲义
     </ion-segment-button>
   </ion-segment>
 </ion-header>
 <ion-content no-padding>
   <div [ngSwitch]="seg" style="width:100%;height:100%">
     <div *ngSwitchCase="'s1'">
-      <!--<ion-item no-lines>
-        <ion-label>播放速度</ion-label>
-        <ion-select [(ngModel)]="playbackRate" (ionChange)="setRate($event)" interface="popover">
-          <ion-option value=1>正常</ion-option>
-          <ion-option value="0.5">减速</ion-option>
-          <ion-option value=1.5>加速1.5倍</ion-option>
-          <ion-option value=2>加速2.0倍</ion-option>
-        </ion-select>
-      </ion-item>-->
       <div class="video-item" *ngFor="let v of videos;let i = index">
-        <div class="video-title" tappable (click)="htoggle(i)">{{v.title}}<div class="cb"></div></div>
+        <div class="video-title" tappable (click)="htoggle(i)">{{v.title}}
+          <div class="cb"></div>
+        </div>
         <div class="video-content" *ngFor="let v of v.list;let j=index">
           <div *ngIf="!isOk(v)">
             <img src="assets/images/cant.png"/>
@@ -44,7 +61,9 @@
                 {{formatSeconds(v.done)}}/{{formatSeconds(v.time)}}
               </p>
             </div>
-            <div [class]="getDownClass(v.id)" tappable (click)="setOpera(i,j)"><div><p>0%</p></div></div>
+            <div [class]="getDownClass(v.id)" tappable (click)="setOpera(i,j)">
+              <div><p>0%</p></div>
+            </div>
           </div>
           <!--
           <div *ngIf="v.down==0" class="video-down" (click)="setOpera(i,j)"></div>

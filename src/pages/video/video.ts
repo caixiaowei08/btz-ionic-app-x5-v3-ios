@@ -96,8 +96,12 @@ export class VideoPage {
     let down = 0;
     for (let x of this.downqueue) {
       if (id == x.id) {
-        if (cot == 0) down = 2;
-        else down = 3;
+        if (cot == 0) {
+          down = 2;
+        }
+        else {
+          down = 3;
+        }
         break;
       }
       cot++;
@@ -164,8 +168,8 @@ export class VideoPage {
 
   ionViewDidEnter() {
     let video = $("#video")[0];
-    this.httpstorage.getStorage("pl", (data) => {
 
+    this.httpstorage.getStorage("pl", (data) => {
       if (data === null) {
         data = [];
         this.httpstorage.setStorage("pl", data);
@@ -204,7 +208,7 @@ export class VideoPage {
         this.ct = this.video.done;
         this.urll = this.sanitizer.bypassSecurityTrustResourceUrl(this.video.lectureUrl == null ? '' : this.video.lectureUrl);
       }
-    })
+    });
   }
 
   ionViewWillUnload() {
@@ -335,7 +339,7 @@ export class VideoPage {
     else {
       let idx = 0;
       for (let i = 0; i < this.downqueue.length; i++) {
-        if (this.downqueue[i].id ===  v.id) {
+        if (this.downqueue[i].id === v.id) {
           idx = i;
           break;
         }

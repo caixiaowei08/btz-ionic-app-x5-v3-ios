@@ -60,19 +60,30 @@ export class LivePage {
       if (data.id != 0) {
         this.httpstorage.getHttp('/app/appRecordedVideoController.do?getRecordedVideoListBySubCourseId&subCourseId=' + this.subject.id, (data) => {
           if (data != null) { //有网
-            if (data.returnCode) this.video = data.content;
-            else this.video = [];
+            if (data.returnCode) {
+              this.video = data.content;
+            }
+            else {
+              this.video = [];
+            }
           }
-          else this.video = [];
+          else {
+            this.video = [];
+          }
         })
         //获取直播列表
         this.httpstorage.getHttp('/app/appLiveVideoController.do?getLiveVideoListBySubCourseId&subCourseId=' + this.subject.id, (data) => {
           if (data != null) {
-            console.log(data.content);
-            if (data.returnCode) this.live = data.content;
-            else this.live = [];
+            if (data.returnCode) {
+              this.live = data.content;
+            }
+            else {
+              this.live = [];
+            }
           }
-          else this.live = [];
+          else {
+            this.live = [];
+          }
         })
       }
     })

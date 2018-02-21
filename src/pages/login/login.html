@@ -8,17 +8,21 @@
     <input type="button" class="forget" value="修改密码" (click)="mod()"/>
     <button ion-button round class="loginbt" (click)="login()">登录</button>
     <button ion-button round class="loginbt freebt" (click)="free()">免费试用</button>
- <!--   <button ion-button round class="loginbt freebt" *ngIf="showInAppPurchase" (click)="buyvip()">立即购买</button>-->
+    <!--   <button ion-button round class="loginbt freebt" *ngIf="showInAppPurchase" (click)="buyvip()">立即购买</button>-->
   </div>
   <div *ngIf="pwm" class="loginpw">
-      <div class="pwc" tappable (click)="clear()"><ion-icon name="md-close"></ion-icon></div>
-      <input type="text" class="logintx pwtx" placeholder="请输入用户名" [(ngModel)]="pwmuser"/>
-      <input type="password" class="logintx pwtx" placeholder="请输入旧密码" [(ngModel)]="pwmopw"/>
-      <input type="password" class="logintx pwtx" placeholder="请输入新密码" [(ngModel)]="pwmnpw"/>
-      <button ion-button round class="loginbt pwbt" (click)="pwmok()">确认</button>
+    <div class="pwc" tappable (click)="clear()">
+      <ion-icon name="md-close"></ion-icon>
+    </div>
+    <input type="text" class="logintx pwtx" placeholder="请输入用户名" [(ngModel)]="pwmuser"/>
+    <input type="password" class="logintx pwtx" placeholder="请输入旧密码" [(ngModel)]="pwmopw"/>
+    <input type="password" class="logintx pwtx" placeholder="请输入新密码" [(ngModel)]="pwmnpw"/>
+    <button ion-button round class="loginbt pwbt" (click)="pwmok()">确认</button>
   </div>
   <div *ngIf="pwf" class="loginpw">
-    <div class="pwc" tappable (click)="clear()"><ion-icon name="md-close"></ion-icon></div>
+    <div class="pwc" tappable (click)="clear()">
+      <ion-icon name="md-close"></ion-icon>
+    </div>
     <input type="text" tappable class="logintx pwtx" placeholder="请输入用户名" [(ngModel)]="pwfuser"/>
     <input type="text" tappable class="logintx pwtx" placeholder="请输入验证码" [(ngModel)]="pwfyzm" *ngIf="!pwfs"/>
     <input type="password" class="logintx pwtx" placeholder="请输入新密码" [(ngModel)]="pwfpwd" *ngIf="!pwfs"/>
@@ -27,7 +31,9 @@
   </div>
 
   <div *ngIf="pwr" class="loginpw">
-    <div class="pwc" tappable (click)="clear()"><ion-icon name="md-close"></ion-icon></div>
+    <div class="pwc" tappable (click)="clear()">
+      <ion-icon name="md-close"></ion-icon>
+    </div>
     <input type="text" tappable class="logintx pwtx" placeholder="请输入用户名" [(ngModel)]="pwruser"/>
     <input type="text" tappable class="logintx pwtx" placeholder="请输入邮箱" [(ngModel)]="pwremail"/>
     <input type="password" class="logintx pwtx" placeholder="请输入密码" [(ngModel)]="pwrpwd"/>

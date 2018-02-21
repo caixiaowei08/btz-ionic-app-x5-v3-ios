@@ -1,13 +1,13 @@
 <ion-header>
-    <ion-navbar>
-      <ion-title>{{title}}</ion-title>
-      <ion-buttons left>
-        <button ion-button icon-only tappable (click)="dismiss()">
-          <ion-icon name="md-close"></ion-icon>
-        </button>
-      </ion-buttons>
-    </ion-navbar>
-  </ion-header>
-  <ion-content no-padding>
-      <video id="videos" [src]="url" tappable webkit-playsinline autoplay controls controlsList="nodownload"></video>
-  </ion-content>
+  <ion-navbar>
+    <ion-title>{{title}}</ion-title>
+    <ion-buttons left>
+      <button ion-button icon-only tappable (click)="dismiss()">
+        <ion-icon name="md-close"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+<ion-content no-padding>
+  <video id="videos" [src]="url" tappable webkit-playsinline autoplay controls controlsList="nodownload"></video>
+</ion-content>

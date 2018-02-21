@@ -1,0 +1,22 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>绑定手机</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content no-padding>
+  <ion-list *ngIf="hasBindPhoneNoFlag" class="minelist" no-lines>
+    <ion-item>
+      <ion-label>&nbsp;&nbsp;已绑定手机号&nbsp;&nbsp;&nbsp;&nbsp;{{currentPhoneNo}}</ion-label>
+    </ion-item>
+  </ion-list>
+
+  <div class="midcon">
+    <input type="number" tappable class="logintx" placeholder="请输入11位手机号" [(ngModel)]="phoneNo"/>
+    <input type="number" tappable class="logintx" placeholder="请输入6位数字验证码" [(ngModel)]="smsCheckCode"/>
+    <button ion-button round class="loginbt" *ngIf="!sendSmsFlag" (click)="doGetPhoneSmsCheckCode()">发送手机短信验证码</button>
+    <button ion-button round class="loginbt" *ngIf="sendSmsFlag" (click)="doSavePhoneNoByTokenAndCheckCode()">绑定手机号
+    </button>
+    <button ion-button round class="loginbt freebt" *ngIf="sendSmsFlag" (click)="doGetPhoneSmsCheckCode()">重新获取手机短信验证码
+    </button>
+  </div>
+</ion-content>

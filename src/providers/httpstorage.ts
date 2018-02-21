@@ -5,34 +5,17 @@ import { Storage } from '@ionic/storage';
 
 @Injectable()
 export class HttpStorage {
-  //url:string="http://192.168.31.35:8080";
-  url:string="http://contact.app.baitizhan.com"
+  url:string="http://192.168.31.35:8080";
+  //url:string="http://contact.app.baitizhan.com"
   constructor(private http: Http,private storage:Storage) {
   }
-  /*
-  HS(url, key, callback){
-    this.http.get(url).subscribe((data)=>{
-      let tmp=data.json();
-      if(tmp.returnCode) this.setStorage(key,tmp.content);
-      callback(tmp.content);
-    },(error)=>{
-      this.storage.get(key).then((data) => {
-        callback(data)
-      })
-    })
-  }
-  */
+
   getHttp(url,callback){
     let obj=this.http.get(this.url+url).subscribe((data)=>{
       callback(data.json());
     },(error)=>{
       callback(null);
     })
-    /*
-    setTimeout(() => {
-      obj.unsubscribe();
-    }, 8000);
-    */
   }
   postHttp(url,body,callback){
     this.http.post(this.url+url,body).subscribe((data)=>{

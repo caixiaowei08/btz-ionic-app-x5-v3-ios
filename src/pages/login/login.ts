@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
 import {AlertController, NavController, NavParams} from 'ionic-angular';
 import {TabsPage} from '../tabs/tabs';
+import {PhonePage} from "../phone/phone";
 import {HttpStorage} from '../../providers/httpstorage';
 import {BuyvipPage} from '../buyvip/buyvip';
 import {Storage} from '@ionic/storage';
@@ -53,39 +54,8 @@ export class LoginPage {
       } else {
         this.httpstorage.setStorage("inAppPurchaseFlag", "off");
       }
-    })
+    });
   }
-
-  /**login() {
-    this.httpstorage.getHttp('/app/loginController.do?login&userId=' + this.account + '&userPwd=' + this.password, (data) => {
-      console.log(data);
-      if (data != null) {
-        if (data.returnCode) {
-          let user: any = {
-            token: data.content.token,
-            userId: data.content.userId,
-            userName: data.content.userName
-          }
-          this.storage.set("user", user).then((data)=>{
-            this.navCtrl.setRoot(TabsPage);
-          }).catch((err)=>{
-            this.showAlertCtrl("登录异常："+JSON.stringify(err));
-          });
-        }
-        else {
-          let alert = this.alertCtrl.create({
-            title: '系统通知',
-            subTitle: '账号或密码错误',
-            buttons: ['好'],
-          });
-          alert.present();
-        }
-      }
-      else {
-        this.showAlertCtrl("网络异常，请检查网络问题！");
-      }
-    })
-  }*/
 
   login() {
     var this_ = this;
@@ -98,10 +68,13 @@ export class LoginPage {
           let user: any = {
             token: data.content.token,
             userId: data.content.userId,
-            userName: data.content.userName
+            userName: data.content.userName,
+            phoneNo: data.content.phoneNo
           }
+
           this_.storage.set("user", user).then((data) => {
-              this_.navCtrl.setRoot(TabsPage);
+              //跳转设置手机号
+              this_.navCtrl.setRoot(TabsPage, {comeFrom: 'loginPage', tabsSelect: 'loginPage'});
             }
           ).catch((err) => {
             let alert = this.alertCtrl.create({
@@ -131,7 +104,7 @@ export class LoginPage {
     });
   }
 
-  showAlertCtrl(msg){
+  showAlertCtrl(msg) {
     let alert = this.alertCtrl.create({
       title: '系统通知',
       subTitle: msg,
@@ -144,14 +117,13 @@ export class LoginPage {
     let user: any = {
       token: '',
       userId: '百词斩免登陆测试用户',
-      userName: ''
+      userName: '',
+      phoneNo: ''
     }
-    //this.httpstorage.setStorage("user", user);
-    //this.navCtrl.setRoot(TabsPage);
-    this.storage.set("user", user).then((data)=>{
+    this.storage.set("user", user).then((data) => {
       this.navCtrl.setRoot(TabsPage);
-    }).catch((err)=>{
-      this.showAlertCtrl("登录异常："+JSON.stringify(err));
+    }).catch((err) => {
+      this.showAlertCtrl("登录异常：" + JSON.stringify(err));
     });
   }
 
@@ -178,7 +150,6 @@ export class LoginPage {
         title: '系统通知',
         subTitle: '请先输入账号！',
         buttons: ['好'],
-        //cssClass:'mid'
       });
       alert.present();
     }
@@ -218,33 +189,7 @@ export class LoginPage {
     }
   }
 
-  /**pwfok() {
-    if (this.pwfyzm != "" && this.pwfpwd != "")
-      this.httpstorage.getHttp("/app/userController.do?doUpdatePwdByEmailCode&userId=" + this.pwfuser + "&newPwd=" + this.pwfpwd + "&emailCode=" + this.pwfyzm, (data) => {
-        let alert = this.alertCtrl.create({
-          title: '系统通知',
-          subTitle: data.msg,
-          buttons: ['好'],
-          //cssClass:'mid'
-        });
-        alert.present();
-        if (data.returnCode) this.clear();
-      })
-  }
-
-  pwmok() {
-    this.httpstorage.getHttp("/app/userController.do?doUpdatePwdByOldPwd&userId=" + this.pwmuser + "&newPwd=" + this.pwmnpw + "&oldPwd=" + this.pwmopw, (data) => {
-      let alert = this.alertCtrl.create({
-        title: '系统通知',
-        subTitle: data.msg,
-        buttons: ['好'],
-        //cssClass:'mid'
-      });
-      alert.present();
-      if (data.returnCode) this.clear();
-    })
-  }
-*///验证码修改码 修改密码
+  //验证码修改码 修改密码
   pwfok() {
     var this_ = this;
     if (this_.pwfyzm != "" && this_.pwfpwd != "") {
@@ -287,6 +232,39 @@ export class LoginPage {
       if (data.returnCode) {
         this.clear();
       }
+    });
+  }
+
+  //发送短信验证码
+  doSendSmsCheckCode() {
+    var this_ = this;
+    this_.httpstorage.postHttp('/app/userController.do?doSendSmsCodeByTokenAndPhoneNo', JSON.stringify({
+      token: "b58e8c224f2345ec99fe042a1349728d",
+      phoneNo: "13162302663"
+    }), (data) => {
+      let alert = this.alertCtrl.create({
+        title: '系统通知',
+        subTitle: data.msg,
+        buttons: ['好'],
+      });
+      alert.present();
+    });
+  }
+
+  //发送短信验证码
+  doSavePhoneNo() {
+    var this_ = this;
+    this_.httpstorage.postHttp('/app/userController.do?doCheckSmsCodeAndSetPhoneNoByTokenAndPhoneNoAndSmsCode', JSON.stringify({
+      token: "b58e8c224f2345ec99fe042a1349728d",
+      phoneNo: "13162302663",
+      smsCheckCode: "984042",
+    }), (data) => {
+      let alert = this.alertCtrl.create({
+        title: '系统通知',
+        subTitle: data.msg,
+        buttons: ['好'],
+      });
+      alert.present();
     });
   }
 
