@@ -5,8 +5,8 @@ import { Storage } from '@ionic/storage';
 
 @Injectable()
 export class HttpStorage {
-  url:string="http://192.168.31.35:8080";
-  //url:string="http://contact.app.baitizhan.com"
+  //url:string="http://192.168.31.35:8080";
+  url:string="http://contact.app.baitizhan.com"
   constructor(private http: Http,private storage:Storage) {
   }
 

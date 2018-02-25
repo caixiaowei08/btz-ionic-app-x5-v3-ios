@@ -41,7 +41,6 @@ import {PlayPage} from '../pages/play/play';
 import {BuyvipPage} from '../pages/buyvip/buyvip';
 import {PhonePage} from '../pages/phone/phone';
 
-
 import {StatusBar} from '@ionic-native/status-bar';
 import {SplashScreen} from '@ionic-native/splash-screen';
 
