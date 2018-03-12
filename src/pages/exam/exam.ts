@@ -231,7 +231,12 @@ export class ExamPage {
     if (this.exam.done > 0) {
       this.check();
     }
-    this.saveSingleQuestionRecordByAppTokenAndExerciseId(this.exam);
+    try {
+      this.saveSingleQuestionRecordByAppTokenAndExerciseId(this.exam);
+    } catch (err) {
+      //do nothing
+    }
+
     this.saveQuestionRecord();
   }
 
@@ -289,7 +294,12 @@ export class ExamPage {
     if (this.exam.done > 0) {
       this.check();
     }
-    this.saveSingleQuestionRecordByAppTokenAndExerciseId(this.exam);
+    try {
+      this.saveSingleQuestionRecordByAppTokenAndExerciseId(this.exam);
+    } catch (err) {
+      //do nothing
+    }
+
     this.saveQuestionRecord();
   }
 
@@ -313,7 +323,11 @@ export class ExamPage {
     if (this.exam.done > 0) {
       this.check();
     }
-    this.saveSingleQuestionRecordByAppTokenAndExerciseId(this.exam);
+    try {
+      this.saveSingleQuestionRecordByAppTokenAndExerciseId(this.exam);
+    } catch (err) {
+      //do nothing
+    }
     this.saveQuestionRecord();
   }
 
@@ -361,7 +375,13 @@ export class ExamPage {
     if (this.exam.done > 0 && this.exam.typeShow != 5 && this.exam.typeShow != 8) {
       this.check();
     }
-    this.saveSingleQuestionRecordByAppTokenAndExerciseId(this.exam);
+    try {
+      this.saveSingleQuestionRecordByAppTokenAndExerciseId(this.exam);
+    } catch (err) {
+      //donothing
+    }
+
+
     this.saveQuestionRecord();
   }
 
@@ -442,7 +462,11 @@ export class ExamPage {
       if (this.exam.done > 0) {
         this.check();
       }
-      this.saveSingleQuestionRecordByAppTokenAndExerciseId(this.exam);
+      try {
+        this.saveSingleQuestionRecordByAppTokenAndExerciseId(this.exam);
+      } catch (err) {
+        //do nothing
+      }
       this.saveQuestionRecord();
     }
   }
@@ -486,7 +510,11 @@ export class ExamPage {
       if (this.exam.done > 0) {
         this.check();
       }
-      this.saveSingleQuestionRecordByAppTokenAndExerciseId(this.exam);
+      try {
+        this.saveSingleQuestionRecordByAppTokenAndExerciseId(this.exam);
+      } catch (err) {
+        //do nothing
+      }
       this.saveQuestionRecord();
     }
 
@@ -598,7 +626,7 @@ export class ExamPage {
       subject: this.subject,
       title: this.title,
       exams: this.exams,
-      comeFrom:this.comeFrom,
+      comeFrom: this.comeFrom,
       mode: this.time,
       check: this.check,
       moduleType: this.moduleType,

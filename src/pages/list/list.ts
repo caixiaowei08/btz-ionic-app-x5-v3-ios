@@ -389,7 +389,13 @@ export class ListPage {
               v.done = 0;
               v.set = "";
             }
-            this.doClearAllQuestionRecordListByAppTokenAndSubCourseIdAndModuleType();
+
+            try {
+              this.doClearAllQuestionRecordListByAppTokenAndSubCourseIdAndModuleType();
+            } catch (err) {
+              //donothing
+            }
+            //this.doClearAllQuestionRecordListByAppTokenAndSubCourseIdAndModuleType();
             this.saveQuestionRecord();
           }
         },

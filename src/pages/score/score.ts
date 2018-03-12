@@ -126,9 +126,18 @@ export class ScorePage {
       });
       prompt.present();
     }
+    try {
+      this.saveQuestionRecord();
+    } catch (err) {
+      this.showMsg("题目本地保存异常!");
+    }
 
-    this.saveQuestionRecord();
-    this.sendAllRecordToServce();
+    try {
+      this.sendAllRecordToServce();
+    }catch (err){
+      //do nothing
+    }
+
   }
 
 

@@ -37,8 +37,6 @@ export class HomePage {
               public navCtrl: NavController,
               public navParams: NavParams,
               public httpstorage: HttpStorage) {
-    //this.httpstorage.delStorage("play")
-    //this.httpstorage.delAllStorage();
     this.token = "";
     this.slides = [{img: '', url: ''}];
     this.score = {right: 0, all: 0};

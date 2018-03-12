@@ -6,21 +6,24 @@
   <!--controls="controls" controlsList="nodownload" playsinline webkit-playsinline>-->
   <!--</video>-->
   <div style="height: 250px;width: 100%;">
-    <vg-player>
+    <vg-player style="display:-webkit-flex;">
       <vg-overlay-play></vg-overlay-play>
-      <vg-controls [vgAutohide]="true" [vgAutohideTime]="2" style="height: 30px;">
-        <vg-play-pause style="height: 30px;line-height: 30px;width: 30px;"></vg-play-pause>
-        <vg-time-display style="height: 30px;line-height: 30px;width:40px;font-size: 8px;" vgProperty="current"
-                         vgFormat="hh:mm:ss">
+      <vg-controls [vgAutohide]="true" [vgAutohideTime]="2" style="display:-webkit-flex;">
+        <vg-play-pause
+          style="display:-webkit-flex;-webkit-align-items:center;-webkit-justify-content:center;height: 30px;line-height: 30px;width: 30px;"></vg-play-pause>
+        <vg-time-display
+          style="display:-webkit-flex;-webkit-align-items:center;-webkit-justify-content:center;height: 30px;line-height: 30px;width:40px;font-size: 8px;"
+          vgProperty="current"
+          vgFormat="hh:mm:ss">
         </vg-time-display>
-        <vg-scrub-bar style="height: 30px;line-height: 30px;">
-          <vg-scrub-bar-current-time></vg-scrub-bar-current-time>
-          <vg-scrub-bar-buffering-time></vg-scrub-bar-buffering-time>
+        <vg-scrub-bar style="-webkit-flex-grow:1;-webkit-flex-basis:0;height: 30px;line-height: 30px;">
+          <vg-scrub-bar-current-time style="display: -webkit-flex;"></vg-scrub-bar-current-time>
+          <vg-scrub-bar-buffering-time style="display: -webkit-flex;"></vg-scrub-bar-buffering-time>
         </vg-scrub-bar>
-        <vg-time-display style="height: 30px;line-height: 30px;width:40px;font-size: 8px;" vgProperty="total"
+        <vg-time-display style="display:-webkit-flex;-webkit-align-items:center;-webkit-justify-content:center;height: 30px;line-height: 30px;width:40px;font-size: 8px;" vgProperty="total"
                          vgFormat="hh:mm:ss">
         </vg-time-display>
-        <vg-fullscreen #fullscreen style="height: 30px;line-height: 30px;width: 30px;"></vg-fullscreen>
+        <vg-fullscreen #fullscreen style="display:-webkit-flex;-webkit-align-items:center;height: 30px;line-height: 30px;width: 30px;"></vg-fullscreen>
       </vg-controls>
       <video [vgMedia]="onlineVideo" #onlineVideo id="video" [src]="url" preload="auto" playsinline webkit-playsinline
              (timeupdate)="getJd($event)" (canplay)="canPlay($event)">
