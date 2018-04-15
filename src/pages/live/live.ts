@@ -39,14 +39,9 @@ export class LivePage {
   }
 
   choose(i, j) {
-    //let modal=this.modalCtrl.create(VideoPage,{subject:this.subject,videos:this.video[i].list[j].list,ft:this.fileTransfer,downqueue:this.downqueue,vd:this.vd})
-    //modal.present();
     this.navCtrl.push(VideoPage, {
       subject: this.subject,
-      videos: this.video[i].list[j].list,
-      ft: this.fileTransfer,
-      downqueue: this.downqueue,
-      vd: this.vd
+      videos: this.video[i].list[j].list
     });
   }
 

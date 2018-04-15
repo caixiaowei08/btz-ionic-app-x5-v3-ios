@@ -4,14 +4,14 @@
   </ion-navbar>
 </ion-header>
 <ion-content no-padding>
-  <page-null *ngIf="video!=null&&video.length==0"></page-null>
-  <div *ngIf="video!=null">
-    <div class="video-content" *ngFor="let v of video;let i = index">
+  <page-null *ngIf="videoList!=null&&videoList.length==0"></page-null>
+  <div *ngIf="videoList!=null">
+    <div class="video-content" *ngFor="let videoItem of videoList;let i = index">
       <img src="assets/images/play.png"/>
-      <div class="video-text" tappable (click)="setUrl(i)">{{v.tit}}
-        <p>{{getDate(i)}}</p>
+      <div class="video-text" tappable (click)="playVideo(videoItem.id,videoItem.fileName)">{{videoItem.fileName}}
+        <p>{{videoItem.lastModifyTime}}</p>
       </div>
-      <div class="video-delete" tappable (click)="delete(i)"></div>
+      <div class="video-delete" tappable (click)="delete(videoItem.id)"></div>
     </div>
   </div>
 </ion-content>

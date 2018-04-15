@@ -2,9 +2,6 @@
   <ion-navbar>
     <ion-title>{{title}}</ion-title>
   </ion-navbar>
-  <!--<video id="video" [src]="url" tappable class="video-js vjs-big-play-centered" (timeupdate)="getJd($event)" preload="auto" (canplay)="canPlay($event)"-->
-  <!--controls="controls" controlsList="nodownload" playsinline webkit-playsinline>-->
-  <!--</video>-->
   <div style="height: 250px;width: 100%;">
     <vg-player style="display:-webkit-flex;">
       <vg-overlay-play></vg-overlay-play>
@@ -25,8 +22,7 @@
         </vg-time-display>
         <vg-fullscreen #fullscreen style="display:-webkit-flex;-webkit-align-items:center;height: 30px;line-height: 30px;width: 30px;"></vg-fullscreen>
       </vg-controls>
-      <video [vgMedia]="onlineVideo" #onlineVideo id="video" [src]="url" preload="auto" playsinline webkit-playsinline
-             (timeupdate)="getJd($event)" (canplay)="canPlay($event)">
+      <video [vgMedia]="onlineVideo" #onlineVideo id="video" [src]="currentVideoUrl"  (timeupdate)="videoPlayTimeUpdate($event)" preload="auto" playsinline webkit-playsinline>
       </video>
     </vg-player>
   </div>
@@ -44,41 +40,40 @@
 <ion-content no-padding>
   <div [ngSwitch]="seg" style="width:100%;height:100%">
     <div *ngSwitchCase="'s1'">
-      <div class="video-item" *ngFor="let v of videos;let i = index">
-        <div class="video-title" tappable (click)="htoggle(i)">{{v.title}}
+      <div class="video-item" *ngFor="let videoSubList  of videos;let i = index">
+        <div class="video-title" (click)="toggleSubList(i)">{{videoSubList.title}}
           <div class="cb"></div>
         </div>
-        <div class="video-content" *ngFor="let v of v.list;let j=index">
-          <div *ngIf="!isOk(v)">
+        <div class="video-content" *ngFor="let videoItem of videoSubList.list;let j=index">
+          <div *ngIf="!isOk(videoItem)">
             <img src="assets/images/cant.png"/>
-            <div class="video-cant">{{v.title}}
+            <div class="video-cant">{{videoItem.title}}
               <p>待解锁</p>
             </div>
             <div></div>
           </div>
-          <div *ngIf="isOk(v)">
+          <div *ngIf="isOk(videoItem)">
             <img src="assets/images/play.png"/>
-            <div class="video-text" tappable (click)="setUrl(i,j)">{{v.title}}
-              <p *ngIf="v.done==0">{{si==i&&sj==j?(first?'暂停中':'加载中'):'未观看'}}</p>
-              <p *ngIf="v.done!=0" [class]="si==i&&sj==j?'video-text-p':''">
-                {{formatSeconds(v.done)}}/{{formatSeconds(v.time)}}
+            <div (click)="playVideo(i,j)" class="video-text">{{videoItem.title}}
+              <p *ngIf="videoItem.currentTime==0">
+                {{currentVideoIndexI==i&&currentVideoIndexJ==j?'加载中':'未观看'}}</p>
+              <p *ngIf="videoItem.currentTime!=0"
+                 [class]="currentVideoIndexI==i&&currentVideoIndexJ==j?'video-text-p':''">
+                {{formatSeconds(videoItem.currentTime)}}/{{formatSeconds(videoItem.duration)}}
               </p>
             </div>
-            <div [class]="getDownClass(v.id)" tappable (click)="setOpera(i,j)">
+            <div id="{{videoItem.id}}" class="video-down" (click)="download(i,j)">
               <div><p>0%</p></div>
             </div>
+            <div style="width: 10px;"></div>
+            <div class="video-delete" (click)="deleteVideoFile(i,j)">
+            </div>
           </div>
-          <!--
-          <div *ngIf="v.down==0" class="video-down" (click)="setOpera(i,j)"></div>
-          <div *ngIf="v.down==1" class="video-delete" (click)="setOpera(i,j)"></div>
-          <div *ngIf="v.down==2" class="video-jdt" (click)="setOpera(i,j)"></div>
-          <div *ngIf="v.down==3" class="video-wait" (click)="setOpera(i,j)"></div>
-          -->
         </div>
       </div>
     </div>
-    <div *ngSwitchCase="'s2'" style="width: 100%;height: 100%;overflow: auto;">
-      <iframe [src]="urll"></iframe>
+    <div *ngSwitchCase="'s2'" style="width:100%;height:100%">
+      <iframe [src]="currentLectureUrl"></iframe>
     </div>
   </div>
 </ion-content>

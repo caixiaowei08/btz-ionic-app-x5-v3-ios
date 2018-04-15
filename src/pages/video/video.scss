@@ -88,7 +88,7 @@ page-video {
             }
         }
         .video-down{
-            width:30px;
+            width:35px;
             height:30px;
             background-image: url(../assets/images/dd.png);
             background-repeat: no-repeat;
@@ -98,7 +98,7 @@ page-video {
             }
         }
         .video-delete{
-            width:30px;
+            width:35px;
             height:30px;
             background-image: url(../assets/images/dd.png);
             background-size:auto 30px;
@@ -108,7 +108,7 @@ page-video {
             }
         }
         .video-jdt,.video-wait{
-            width:30px;
+            width:36px;
             height:5px;
             background-color: #e1e1e1;
             margin-top:15px;
@@ -118,7 +118,7 @@ page-video {
                 background-color:color($colors,top);
                 p{
                     margin-top:-16px;
-                    font-size:12px;
+                    font-size:9px;
                     padding:0;
                     width:30px;
                     text-align: center;

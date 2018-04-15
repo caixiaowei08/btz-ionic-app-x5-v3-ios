@@ -129,12 +129,12 @@ export class ScorePage {
     try {
       this.saveQuestionRecord();
     } catch (err) {
-      this.showMsg("题目本地保存异常!");
+      this.showMsg("题目本地保存异常!" + err.toString());
     }
 
     try {
       this.sendAllRecordToServce();
-    }catch (err){
+    } catch (err) {
       //do nothing
     }
 

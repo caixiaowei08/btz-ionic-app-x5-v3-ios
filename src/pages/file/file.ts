@@ -1,59 +1,84 @@
 import { Component } from '@angular/core';
-import { ModalController,NavController, NavParams} from 'ionic-angular';
+import { ModalController,NavController, NavParams,ToastController} from 'ionic-angular';
 import { File } from '@ionic-native/file';
 import { HttpStorage } from '../../providers/httpstorage';
 import { NullPage } from '../null/null';
 import { PlayPage } from '../play/play';
-import * as $ from "jquery";
+import {Storage} from '@ionic/storage';
+
+declare let cordova:any;
 
 @Component({
   selector: 'page-file',
   templateUrl: 'file.html'
 })
 export class FilePage {
-  video:Array<{id:string,time:string,tit:string}>;
+
+  videoList:any;
   url:any;
-  si:any;
-  constructor(public modalCtrl:ModalController,public navCtrl: NavController,public navParams: NavParams,public file:File,public httpstorage:HttpStorage) {
-    this.video=null;
-    this.si=0;
-    this.httpstorage.getStorage("vd",(data)=>{
-      if(data==null){
-        data=[];
-        this.httpstorage.setStorage("vd",data);
-      }
-      this.video=data;
-      console.log(this.video);
-    })
-  }
-  getDate(i){
-    let date=new Date(this.video[i].time);
-    let h=date.getHours();
-    let hh=h<10?"0"+h:h;
-    let m=date.getMinutes();
-    let mm=m<10?"0"+m:m;
-    let s=date.getSeconds();
-    let ss=s<10?"0"+s:s;
-    return date.getFullYear()+"/"+(date.getMonth()+1)+"/"+date.getDate()+"  "+hh+":"+mm+":"+ss;
+
+  constructor(public modalCtrl:ModalController,public navCtrl: NavController,public navParams: NavParams,public file:File,public httpstorage:HttpStorage,public toastCtrl:ToastController,public storage:Storage) {
+     this.videoList = [];
+     this.loadLocalVideoFile();
   }
 
-  setUrl(i){
-    this.si=i;
-    //this.url=this.file.dataDirectory+this.video[i].id+".mp4";
-    this.url=this.file.dataDirectory+this.video[i].id+".mp4";
-    this.url =  this.url.replace("file://","");
-    let modal=this.modalCtrl.create(PlayPage,{url:this.url,title:this.video[i].tit});
+  // ionViewDidEnter(){
+  //   let this_ = this;
+  //   this_.loadLocalVideoFile();
+  // }
+
+  loadLocalVideoFile(){
+    let this_ = this;
+    console.log("---loadLocalVideoFile---");
+    cordova.plugins.CordovaFileTransfer.findVideoList(this_.file.dataDirectory.replace("file://",""), (data) => {
+      this_.videoList = data;
+      for(let i = 0;i<this_.videoList.length;i++ ){
+        let videoItemInfo  =  this_.videoList[i];
+        this_.storage.get("videoInfoItem"+videoItemInfo.id).then((videoInfoItemData)=>{
+          if(videoInfoItemData!=null){
+            videoItemInfo.fileName = videoInfoItemData.title;
+          }
+        });
+      }
+    }, (error) => {
+    });
+  }
+
+  playVideo(videoDir:string,videoName:string){
+    let this_ = this;
+    this_.url=this_.file.dataDirectory.replace("file://","")+videoDir+".mp4";
+    let modal=this.modalCtrl.create(PlayPage,{url:this_.url,title:videoName});
     modal.present();
   }
 
-  delete(i){
-    let id=this.video[i].id;
-    this.file.removeFile(this.file.dataDirectory,id+'.mp4');
-    this.video.splice(i,1);
-    this.httpstorage.setStorage("vd",this.video);
+  delete(fileId: string) {
+    let this_ = this;
+    cordova.plugins.CordovaFileTransfer.delete(fileId.replace(".mp4", "").toString(), "", this_.file.dataDirectory.replace("file://",""), (data) => {
+      this_.presentToast("删除成功！");
+      this_.loadLocalVideoFile();
+    }, (error) => {
+      if (error == "downloading") {
+        this_.presentToast("该视频正在下载，请先暂停，再删除！");
+      } else if (error == "exception") {
+        this_.presentToast("删除失败，请重试！");
+      } else {
+        this_.presentToast("未知异常，请联系客服！");
+      }
+      this_.loadLocalVideoFile();
+    });
   }
 
-  ionViewDidEnter(){
-
+  presentToast(msg: string) {
+    let toast = this.toastCtrl.create({
+      message: msg,
+      duration: 2000,
+      position: 'bottom'
+    });
+    toast.onDidDismiss(() => {
+      console.log('Dismissed toast');
+    });
+    toast.present();
   }
+
+
 }

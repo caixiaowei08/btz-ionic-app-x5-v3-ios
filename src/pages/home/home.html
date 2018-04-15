@@ -41,7 +41,7 @@
     </ul>
   </div>
 
-  <ion-slides autoplay=6000 speed=2000>
+  <ion-slides autoplay=6000 speed=2000 *ngIf="slides.length>0">
     <ion-slide *ngFor="let s of slides;let i = index" [style.background-image]="getslide(i)"  tappable (click)="slidec()"></ion-slide>
   </ion-slides>
 

@@ -1,118 +1,249 @@
 import {Component} from '@angular/core';
-import {NavController, NavParams, AlertController} from 'ionic-angular';
-import {FileTransfer, FileTransferObject} from '@ionic-native/file-transfer';
+import {NavController, NavParams, AlertController, ToastController} from 'ionic-angular';
 import {File} from '@ionic-native/file';
-import {HttpStorage} from '../../providers/httpstorage';
-import {Platform} from 'ionic-angular';
-import * as $ from "jquery";
 import {DomSanitizer} from '@angular/platform-browser';
+import * as $ from "jquery";
+import {Storage} from '@ionic/storage';
+declare let cordova: any;
 
 @Component({
   selector: 'page-video',
   templateUrl: 'video.html'
 })
 
-
 export class VideoPage {
   seg: any;
   subject: any;
+  title: string;
+  currentVideoIndexI: number;//当前视频记录的序号1
+  currentVideoIndexJ: number;//当前视频记录的序号2
   videos: any;
-  video: any;
-  si: any;
-  sj: any;
-  title: any;
-  url: any;
-  playbackRate: any;
-  fileTransfer: FileTransferObject;
-  downqueue: any;
-  vd: any;
-  urll: any;
-  first: any;
-  ct: any;
-  ctf: any;
+  //当前播放的视频链接
+  currentVideoUrl: string;
+  //当前播放的视频对应的讲义
+  currentLectureUrl: any;
+  currentVideoItem: any;
+  currentPlayVideoItemId: number = -1;
+  playSaveCurrentFlag: boolean = false;
 
-  constructor(private sanitizer: DomSanitizer,
-              public platform: Platform,
-              public navCtrl: NavController,
-              public navParams: NavParams,
-              private httpstorage: HttpStorage,
-              public alertCtrl: AlertController,
-              private transfer: FileTransfer,
-              private file: File) {
-    this.playbackRate = 1;
+  constructor(public navParams: NavParams, private sanitizer: DomSanitizer, public file: File, public alertCtrl: AlertController, private toastCtrl: ToastController, private storage: Storage) {
     this.seg = "s1";
     this.subject = this.navParams.get('subject');
     this.videos = this.navParams.get('videos');
-    this.fileTransfer = this.navParams.get("ft");
-    this.downqueue = this.navParams.get("downqueue");
-    this.vd = this.navParams.get("vd");
-    this.si = 0;
-    this.sj = 0;
     this.title = "返回";
-    this.urll = "";
-    this.first = true;
-    this.ct = -1;
-    this.ctf = true;
-    this.fileTransfer.onProgress((event) => {
-      $(".video-jdt").children("div").css("width", event.loaded * 100 / event.total + "%").html("<p>" + (event.loaded * 100 / event.total).toFixed(0) + "%</p>");
+    this.currentVideoIndexI = 0;
+    this.currentVideoIndexJ = 0;
+  }
+
+  //进入页面初始化
+  ionViewDidEnter() {
+    let this_ = this;
+    this_.onProgress();
+    this_.initAllVideoState();
+  }
+
+  //所有的下载进程进行监控
+  onProgress() {
+    let this_ = this;
+    cordova.plugins.CordovaFileTransfer.onProgress((result) => {
+      if (result.state == 0) {
+        $("#" + result.id).removeClass().addClass("video-jdt");
+        $("#" + result.id).children("div").css("width", result.loaded * 100 / result.total + "%").html("<p>等待</p>");
+      } else if (result.state == 1) {
+        $("#" + result.id).removeClass().addClass("video-jdt");
+        $("#" + result.id).children("div").css("width", result.loaded * 100 / result.total + "%").html("<p>" + (result.loaded * 100 / result.total).toFixed(0) + "%</p>");
+      } else if (result.state == 2) {
+        $("#" + result.id).removeClass().addClass("video-jdt");
+        $("#" + result.id).children("div").css("width", result.loaded * 100 / result.total + "%").html("<p>已下载</p>");
+      } else if (result.state == 4) {
+        $("#" + result.id).removeClass().addClass("video-jdt");
+        $("#" + result.id).children("div").css("width", result.loaded * 100 / result.total + "%").html("<p style='color:red;'>error</p>");
+        this_.presentToast("error:" + result.msg);
+      }
+    }, (error) => {
+      console.log(error);
     });
   }
 
+  initAllVideoState() {
+    let this_ = this;
+    this_.storage.get("currentPlayVideoItemId").then((data) => {
+      if (data != null) {
+        this_.currentPlayVideoItemId = data;
+      }
+      for (let i = 0; i < this_.videos.length; i++) {
+        for (let j = 0; j < this_.videos[i].list.length; j++) {
+          let videoItem = this_.videos[i].list[j];
+          this_.storage.set("videoInfoItem"+videoItem.id,videoItem).then(data=>{}).catch((err)=>{});//保存视频数据到手机 给后面的下载视频 配置视频名称
+          //初始化播放状态
+          this_.storage.get("videoPlayTimeRecord" + videoItem.id).then((data) => {
+            if (data != null) {
+              videoItem.currentTime = data.currentTime;
+              videoItem.duration = data.duration;
+            } else {
+              videoItem.currentTime = 0;
+              videoItem.duration = 0;
+            }
+          }, (error) => {
+            //播放状态
+          });
 
-  isOk(video) {
-    //课程的权限
-    if (video.tryOut || (this.subject.videoClass !== undefined && this.contains(this.subject.videoClass, video.authId) && this.subject.time >= new Date().getTime())) {
-      return true;
-    } else {
-      return false;
-    }
+          cordova.plugins.CordovaFileTransfer.checkVideoItemState(videoItem.id.toString(), this_.file.dataDirectory.replace("file://",""), (result) => {
+            if (result == "download") {//正在下载
+              //donothing 监控来做
+            } else if (result == "wait") {//等待
+              //donothing 监控来做
+            } else if (result == "done") {//已下载
+              $("#" + videoItem.id).removeClass().addClass("video-jdt");
+              $("#" + videoItem.id).children("div").css("width", 100 + "%").html("<p>已下载</p>");
+            } else if (result == "stop") {//暂停
+              $("#" + videoItem.id).removeClass().addClass("video-jdt");
+              $("#" + videoItem.id).children("div").css("width", 0 + "%").html("<p>暂停</p>");
+            } else if (result == "none") {//未下载
+              $("#" + videoItem.id).removeClass().addClass("video-down");
+            }
+          }, (error) => {
+            //do nothing
+            this_.presentToast("获取视频状态错误！")
+          });
+
+          if (videoItem.id == this_.currentPlayVideoItemId) {
+            this_.currentVideoIndexI = i;
+            this_.currentVideoIndexJ = j;
+          }
+        }
+      }
+      this_.currentVideoItem = this_.videos[this_.currentVideoIndexI].list[this_.currentVideoIndexJ];
+      cordova.plugins.CordovaFileTransfer.checkFileIsExist(this_.currentVideoItem.id.toString(), this_.file.dataDirectory.replace("file://",""), (result) => {
+        this_.title = this_.currentVideoItem.title;
+        this_.playSaveCurrentFlag = false;
+        if (result === "Y") {//播放本地视频
+          this_.currentVideoUrl = this_.file.dataDirectory.replace("file://", "") + this_.currentVideoItem.id + ".mp4";
+        } else {
+          this_.currentVideoUrl = this_.currentVideoItem.videoUrl;
+        }
+        this_.currentLectureUrl = this_.sanitizer.bypassSecurityTrustResourceUrl(this_.currentVideoItem.lectureUrl == null ? '' : this_.currentVideoItem.lectureUrl);
+        setTimeout(function () {
+          this_.storage.get("videoPlayTimeRecord" + this_.currentVideoItem.id).then((data) => {
+            if (data != null && data.currentTime > 0) {
+              $("#video")[0].currentTime = (data.currentTime - 10 > 0) ? data.currentTime - 10 : 0;
+            }
+            this_.playSaveCurrentFlag = true;
+          }).catch((error) => {
+            this_.playSaveCurrentFlag = true;
+          });
+          //$("#video")[0].play();
+        }, 1000);
+      }, (error) => {
+
+      });
+    }, (error) => {
+      //current
+    });
   }
 
-
-  contains(av, v) {
-    for (var i = 0; i < av.length; i++) {
-      if (av[i] === v) {
-        return true;
+  playVideo(i: number, j: number) {
+    let this_ = this;
+    //显示
+    this_.currentVideoIndexI = i;
+    this_.currentVideoIndexJ = j;
+    this_.currentVideoItem = this_.videos[this_.currentVideoIndexI].list[this_.currentVideoIndexJ];
+    this_.playSaveCurrentFlag = false;
+    cordova.plugins.CordovaFileTransfer.checkFileIsExist(this_.currentVideoItem.id.toString(), this_.file.dataDirectory.replace("file://",""), (result) => {
+      if (result === "Y") {//播放本地视频
+        this_.currentVideoUrl = this_.file.dataDirectory.replace("file://", "") + this_.currentVideoItem.id + ".mp4";
+      } else {
+        this_.currentVideoUrl = this_.currentVideoItem.videoUrl;
       }
-    }
-    return false;
-  };
-
-  getDownClass(id) {
-    let down = this.getDown(id);
-    if (down == 0) {
-      return 'video-down';
-    } else if (down == 1) {
-      return 'video-delete';
-    } else if (down == 2) {
-      return 'video-jdt';
-    } else {
-      return 'video-wait';
-    }
+      this_.currentLectureUrl = this_.sanitizer.bypassSecurityTrustResourceUrl(this_.currentVideoItem.lectureUrl == null ? '' : this_.currentVideoItem.lectureUrl);
+      this_.title = this_.currentVideoItem.title;
+      this_.storage.set("currentPlayVideoItemId", this_.currentVideoItem.id).then((data) => {
+        //do nothing
+      }).catch((error) => {
+          //do nothing
+        }
+      );
+        setTimeout(function () {
+          this_.storage.get("videoPlayTimeRecord" + this_.currentVideoItem.id).then((data) => {
+            if (data != null && data.currentTime > 0) {
+              $("#video")[0].currentTime = (data.currentTime - 10 > 0) ? data.currentTime - 10 : 0;
+            }
+            this_.playSaveCurrentFlag = true;
+          }).catch((error) => {
+            this_.playSaveCurrentFlag = true;
+          });
+          $("#video")[0].play();
+        }, 1000);
+    }, (error) => {
+      this_.showMsg("播放错误code：10001");
+    });
   }
 
-  getDown(id) {
-    let cot = 0;
-    let down = 0;
-    for (let x of this.downqueue) {
-      if (id == x.id) {
-        if (cot == 0) {
-          down = 2;
-        }
-        else {
-          down = 3;
-        }
-        break;
+  download(i: number, j: number) {
+    let this_ = this;
+    let videoDownload = this_.videos[i].list[j];
+    cordova.plugins.CordovaFileTransfer.download(videoDownload.id.toString(), videoDownload.videoUrl, this_.file.dataDirectory.replace("file://",""), (result) => {
+      this_.presentToast("已添加到下载队列！");
+    }, (error) => {
+      if (error == "exist") {
+        cordova.plugins.CordovaFileTransfer.stop(videoDownload.id.toString(), (result) => {
+          $("#" + videoDownload.id).removeClass().addClass("video-jdt");
+          $("#" + videoDownload.id).children("div").css("width", 0 + "%").html("<p>暂停</p>");
+        }, (error) => {
+          this_.presentToast("暂停异常，请重试！");
+        });
+      } else if (error == "fileExist") {
+        $("#" + videoDownload.id).removeClass().addClass("video-jdt");
+        $("#" + videoDownload.id).children("div").css("width", 100 + "%").html("<p>已下载</p>");
+      } else if (error == "exception") {
+        this_.presentToast("未知异常，请重试！");
       }
-      cot++;
+    });
+  }
+
+  videoPlayTimeUpdate(event) {
+    //记录当前进度
+    let this_ = this;
+    this_.currentVideoItem.duration = event.target.duration;
+    this_.currentVideoItem.currentTime = event.target.currentTime;
+
+    if (this.playSaveCurrentFlag && event.target.currentTime > 1 && event.target.currentTime % 5 > 4.8) {
+      this_.storage.set("videoPlayTimeRecord" + this_.currentVideoItem.id, this_.currentVideoItem).then((data) => {
+      }).catch((error) => {
+      });
     }
-    for (let x of this.vd) {
-      if (id == x.id) {
-        down = 1;
-        break;
+
+  }
+
+  deleteVideoFile(i: number, j: number) {
+    let this_ = this;
+    let videoDownload = this_.videos[i].list[j];
+    cordova.plugins.CordovaFileTransfer.delete(videoDownload.id.toString(), videoDownload.videoUrl, this_.file.dataDirectory.replace("file://",""), (result) => {
+      this_.presentToast("删除成功！");
+      $("#" + videoDownload.id).removeClass().addClass("video-down");
+    }, (error) => {
+      if (error == "downloading") {
+        this_.presentToast("该视频正在下载，请先暂停，再删除！");
+      } else if (error == "exception") {
+        this_.presentToast("删除失败，请重试！");
+      } else {
+        this_.presentToast("未知异常，请联系客服！");
       }
-    }
-    return down;
+    });
+  }
+
+  toggleSubList(i: number) {
+    $(".video-title").eq(i).children(".cb").toggleClass("cbx");
+    $(".video-title").eq(i).nextAll().toggle();
+  }
+
+  showMsg(msg) {
+    let alert = this.alertCtrl.create({
+      title: '系统通知',
+      subTitle: msg,
+      buttons: ['好'],
+    });
+    alert.present();
   }
 
   formatSeconds(value) {
@@ -138,222 +269,40 @@ export class VideoPage {
     return result;
   }
 
-  getJd(event) {
-    this.video.time = event.target.duration;
-    this.video.done = event.target.currentTime;
-  }
-
-  canPlay(event) {
-    if (!this.first) {
-      event.target.play();
-    }
-  }
-
-  showAlter(title, msg) {
-    let alert = this.alertCtrl.create({
-      title: title,
-      subTitle: msg,
-      buttons: ['OK']
+  presentToast(msg: string) {
+    let toast = this.toastCtrl.create({
+      message: msg,
+      duration: 2000,
+      position: 'bottom'
     });
-    alert.present();
-  }
-
-  videoClick(event) {
-    if (event.target.paused) {
-      event.target.play();
-    } else if (event.target.played) {
-      event.target.pause();
-    }
-  }
-
-  ionViewDidEnter() {
-    let video = $("#video")[0];
-
-    this.httpstorage.getStorage("pl", (data) => {
-      if (data === null) {
-        data = [];
-        this.httpstorage.setStorage("pl", data);
-      }
-      else {
-        for (let i = 0; i < this.videos.length; i++) {
-          for (let j = 0; j < this.videos[i].list.length; j++) {
-            for (let v of data) {
-              if (this.videos[i].list[j].id === v.id) {
-                this.videos[i].list[j].done = v.done;
-                this.videos[i].list[j].time = v.time;
-                if (v.flg) {
-                  this.si = i;
-                  this.sj = j;
-                }
-                break;
-              }
-            }
-          }
-        }
-      }
-
-      this.video = this.videos[this.si].list[this.sj];
-      if (this.video !== undefined) {
-        this.title = this.video.title;
-        if (this.isOk(this.video)) {
-          if (this.getDown(this.video.id) === 1) {//已下载
-            this.url = this.file.dataDirectory + this.video.id + '.mp4';
-            this.url = this.url.replace("file://", "");
-          }
-          else {
-            this.url = this.video.videoUrl;
-          }
-        }
-        this.ctf = true;
-        this.ct = this.video.done;
-        this.urll = this.sanitizer.bypassSecurityTrustResourceUrl(this.video.lectureUrl == null ? '' : this.video.lectureUrl);
-      }
+    toast.onDidDismiss(() => {
+      console.log('Dismissed toast');
     });
+    toast.present();
   }
 
-  ionViewWillUnload() {
-    this.httpstorage.getStorage("pl", (data) => {
-      for (let i = 0; i < this.videos.length; i++) {
-        for (let j = 0; j < this.videos[i].list.length; j++) {
-          let flg = true;
-          for (let v of data) {
-            if (this.videos[i].list[j].id === v.id) {
-              v.done = this.videos[i].list[j].done;
-              v.time = this.videos[i].list[j].time;
-              v.flg = 0;
-              if (this.si == i && this.sj == j) {
-                v.flg = 1;
-              }
-              flg = false;
-              break;
-            }
-          }
-          if (flg && this.videos[i].list[j].done > 0) {
-            if (this.si == i && this.sj == j) {
-              data.push({
-                id: this.videos[i].list[j].id,
-                done: this.videos[i].list[j].done,
-                time: this.videos[i].list[j].time,
-                flg: 1
-              })
-            }
-            else {
-              data.push({
-                id: this.videos[i].list[j].id,
-                done: this.videos[i].list[j].done,
-                time: this.videos[i].list[j].time,
-                flg: 0
-              })
-            }
-          }
-        }
-      }
-      this.httpstorage.setStorage("pl", data);
-    })
-  }
 
-  setUrl(i, j) {
-    let v = $("video")[0];
-    if ((this.si != i || this.sj != j) || this.first) {
-      this.first = false;
-      this.si = i;
-      this.sj = j;
-      this.video = this.videos[i].list[j];
-      this.title = this.video.title;
-      if (this.getDown(this.video.id) == 1) {
-        this.url = this.file.dataDirectory + this.video.id + '.mp4';
-        this.url = this.url.replace("file://", "");
-      }
-      else {
-        this.url = this.video.videoUrl;
-      }
-      this.ct = this.video.done;
-      this.ctf = true;
-      this.urll = this.sanitizer.bypassSecurityTrustResourceUrl(this.video.lectureUrl == null ? '' : this.video.lectureUrl);
-    }
-    if (v.paused) {
-      v.play();
-    }
-
-  }
-
-  download() {
-    if (this.downqueue.length > 0) {
-      let v = this.downqueue[0];
-      this.fileTransfer.download(v.videoUrl, this.file.dataDirectory + v.id + '.mp4').then((entry) => {
-        let v = this.downqueue[0];
-        this.httpstorage.getStorage("vd", (data) => {
-          let flg = true;
-          for (let w of data) {
-            if (v.id == w.id) {
-              flg = false;
-              break;
-            }
-          }
-          if (flg) {
-            let time = new Date().getTime();
-            data.push({id: v.id, time: time, tit: v.title});
-            this.httpstorage.setStorage("vd", data);
-            this.vd.push({id: v.id, time: time, tit: v.title});
-          }
-        })
-        this.downqueue.shift();
-        this.download();
-      }, (error) => {
-        this.downqueue.shift();
-        this.download();
-      });
+  isOk(video) {
+    //课程的权限
+    let this_= this;
+    if (video.tryOut || (this_.subject.videoClass !== undefined && this_.contains(this.subject.videoClass, video.authId) && this_.subject.time >= new Date().getTime())) {
+      return true;
+    } else {
+      return false;
     }
   }
 
-  setOpera(i, j) {
-    let v = this.videos[i].list[j];
-    console.log(v);
-
-    let down = this.getDown(v.id);
-    if (down === 0) {
-      this.downqueue.push(v);
-      if (this.downqueue.length === 1) {
-        this.download();
+  /*包含权限*/
+  contains(av, v) {
+    for (var i = 0; i < av.length; i++) {
+      if (av[i] == v) {
+        return true;
       }
     }
-    else if (down === 1) {
-      this.file.removeFile(this.file.dataDirectory, v.id + '.mp4').then((data) => {
-        console.log("remove file success:" + data);
-      }).catch((err) => {
-        console.log("remove file err:" + err);
-      });
-      let idx = 0;
-      for (let i = 0; i < this.vd.length; i++) {
-        if (this.vd[i].id == v.id) {
-          idx = i;
-          break;
-        }
-      }
-      this.vd.splice(i, 1);//?这是什么 看不懂啊
-      this.httpstorage.setStorage("vd", this.vd);
-    }
-    else if (down === 2) {
-      this.fileTransfer.abort();
-    }
-    else {
-      let idx = 0;
-      for (let i = 0; i < this.downqueue.length; i++) {
-        if (this.downqueue[i].id === v.id) {
-          idx = i;
-          break;
-        }
-      }
-      this.downqueue.splice(idx, 1);
-    }
-  }
+    return false;
+  };
 
-  setRate(e) {
-    $("#video")[0].playbackRate = e;
-  }
 
-  htoggle(i: number) {
-    $(".video-title").eq(i).children(".cb").toggleClass("cbx");
-    $(".video-title").eq(i).nextAll().toggle();
-  }
 }
+
+
