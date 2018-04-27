@@ -59,6 +59,7 @@ export class VideoPage {
         $("#" + result.id).removeClass().addClass("video-jdt");
         $("#" + result.id).children("div").css("width", result.loaded * 100 / result.total + "%").html("<p style='color:red;'>error</p>");
         this_.presentToast("error:" + result.msg);
+        console.log(JSON.stringify(result));
       }
     }, (error) => {
       console.log(error);

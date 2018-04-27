@@ -12,14 +12,6 @@ export class DtkPage {
   constructor(public viewCtrl: ViewController , public navCtrl: NavController, public navParams: NavParams) {
     this.exams= this.navParams.get('exams');
     this.setDtk=this.navParams.get("setDtk");
-    /*
-    this.type=[
-      {tit:'一、单项选择题',sum:new Array()},
-      {tit:'二、多项选择题',sum:new Array()},
-      {tit:'三、判断题',sum:new Array()},
-      {tit:'四、大题',sum:new Array()}
-    ]
-    */
     this.type=new Array();
     //['全部','单选题','多选题','判断题','案例题'];
     for(let i=0;i<this.exams.length;i++){
@@ -36,10 +28,6 @@ export class DtkPage {
       else{
         this.type.push({type:this.exams[i].type,tit:this.exams[i].typeName,sum:[i]});
       }
-      /*
-      if(this.exams[i].typeShow<4) this.type[this.exams[i].typeShow-1].sum.push(i);
-      else this.type[3].sum.push(i);
-      */
     }
   }
   getStyle(id){

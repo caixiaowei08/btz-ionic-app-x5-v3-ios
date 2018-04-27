@@ -104,11 +104,12 @@ export class ListDPage {
           }
         }
       }
+      console.log("this.type:"+this.type);
 
       this.navCtrl.push(ExamPage, {
         subject: this.subject,
         title: tit,
-        comeFrom: 1,
+        comeFrom: this.type === 10 ? 1 : 2,
         saveQuestionRecord: this.saveQuestionRecord.bind(this),
         exams: this.exam,
         moduleType: this.seg == 's1' ? 1 : 2,
@@ -164,15 +165,13 @@ export class ListDPage {
 
   //保存
   saveQuestionRecord() {
-    /*  console.log("----AAA---");
         if (this.t1ok) {
           this.httpstorage.setStorage("s" + this.subject.id + "i1", this.t1);
         }
 
         if (this.t2ok) {
           this.httpstorage.setStorage("s" + this.subject.id + "i2", this.t2);
-        }*/
+        }
   }
-
 
 }

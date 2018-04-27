@@ -126,8 +126,9 @@ export class ScorePage {
       });
       prompt.present();
     }
+
     try {
-      this.saveQuestionRecord();
+        this.saveQuestionRecord();
     } catch (err) {
       this.showMsg("题目本地保存异常!" + err.toString());
     }
@@ -157,11 +158,27 @@ export class ScorePage {
         newexams.push(val);
       }
     }
-    this.navCtrl.push(ExamPage, {subject: this.subject, title: this.title, exams: newexams, mode: 2, time: 0});
+    this.navCtrl.push(ExamPage, {
+      subject: this.subject,
+      //saveQuestionRecord: this.saveQuestionRecord,
+      title: this.title,
+      comeFrom: 2,
+      exams: newexams,
+      mode: 2,
+      time: 0
+    });
   }
 
   getAll() {
-    this.navCtrl.push(ExamPage, {subject: this.subject, title: this.title, exams: this.exams, mode: 2, time: 0});
+    this.navCtrl.push(ExamPage, {
+      subject: this.subject,
+     //saveQuestionRecord: this.saveQuestionRecord,
+      title: this.title,
+      comeFrom: 2,
+      exams: this.exams,
+      mode: 2,
+      time: 0
+    });
   }
 
   getWrong() {
@@ -171,7 +188,15 @@ export class ScorePage {
         newexams.push(val);
       }
     }
-    this.navCtrl.push(ExamPage, {subject: this.subject, title: this.title, exams: newexams, mode: 2, time: 0});
+    this.navCtrl.push(ExamPage, {
+      subject: this.subject,
+      comeFrom: 2,
+      //saveQuestionRecord: this.saveQuestionRecord,
+      title: this.title,
+      exams: newexams,
+      mode: 2,
+      time: 0
+    });
   }
 
   /**
@@ -241,8 +266,9 @@ export class ScorePage {
 
   sendAllRecordToServce() {
     let this_ = this;
+    console.log("comeFrom:" + this_.comeFrom);
 
-    if (this_.comeFrom !== undefined && (this_.comeFrom === 1 || this_.comeFrom === 2)) {
+    if (this_.comeFrom !== undefined && (this_.comeFrom === 2)) {
       return;
     }
 
