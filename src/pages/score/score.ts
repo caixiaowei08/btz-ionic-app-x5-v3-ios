@@ -266,7 +266,6 @@ export class ScorePage {
 
   sendAllRecordToServce() {
     let this_ = this;
-    console.log("comeFrom:" + this_.comeFrom);
 
     if (this_.comeFrom !== undefined && (this_.comeFrom === 2)) {
       return;

@@ -716,9 +716,6 @@ export class ExamPage {
   saveSingleQuestionRecordByAppTokenAndExerciseId(exercise) {
     let this_ = this;
 
-    console.log(exercise);
-    console.log(this_.moduleType);
-
     if (this.moduleType !== null && (this.moduleType === 1 || this.moduleType === 2 || this.moduleType === 4 || this.moduleType === 7)) { //目前只记录 1、章节练习 2、核心考点的做题 4。考前押题 7.历年真题
       this_.httpstorage.getStorage('user', (data) => {
         if (data == null) {//无登录信息 返回登录页面
