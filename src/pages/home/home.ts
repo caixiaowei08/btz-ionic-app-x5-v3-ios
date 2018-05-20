@@ -199,24 +199,17 @@ export class HomePage {
   }
 
   getSlides() {
-    this.httpstorage.getHttp('/app/carouselController.do?getCarousel&subCourseId=' + this.subject.id, (data) => {
+    this.httpstorage.getHttp('/app/carouselController.do?getCarouselForNewVersion&subCourseId=' + this.subject.id, (data) => {
       if (data != null) {
         if (data.returnCode) {
           this.slides = data.content;
           this.slide.startAutoplay();
         }
         else {
-          this.httpstorage.getHttp('/app/carouselController.do?getCarousel', (data) => {
-            if (data != null) {
-              if (data.returnCode) {
-                this.slides = data.content;
-                this.slide.startAutoplay();
-              }
-            }
-          })
+          this.slides = [];
+          this.slide.stopAutoplay();
         }
       }
-      //this.slide.startAutoplay();
     })
   }
 
