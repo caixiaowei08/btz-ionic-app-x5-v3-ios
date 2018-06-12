@@ -119,12 +119,6 @@ export class HomePage {
             this.subject.name = '网络未连接';
             this.httpstorage.setStorage("subject", this.subject);
           }
-          /*
-          this.httpstorage.getStorage("subject",(data)=>{
-            if(data!=null) this.subject=data;
-            this.getSubsItemAll();
-          })
-          */
         })
       }
     })
